@@ -2,13 +2,14 @@
   "manifest_version": 2,
   "name": "Better Share Button",
   "version": "1.0",
-  "description": "Improves the share button on Reddit and X to ",
+  "description": "Improves the share button on Reddit and X to be friendly with Discord embedding",
   "content_scripts" : [
     {
       "matches": ["*://*.reddit.com/*"],
       "js": ["dist/reddit.bundle.js"]
     }
   ],
+  "permissions": [ "storage" ],
   "browser_action": {
     "default_icon": "assets/icon.png",
     "default_title": "Browse Time",

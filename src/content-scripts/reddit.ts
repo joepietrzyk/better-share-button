@@ -40,11 +40,16 @@ function main(): void {
                 });
             });
         });
+        const observerParameters = {childList: true, subtree: true};
         const topMatter = document.getElementsByClassName('top-matter')[0];
         if (topMatter) {
-            observer.observe(topMatter, {childList: true, subtree: true});
+            observer.observe(topMatter, observerParameters);
         } else {
-            console.log('Couldn\'t find topMatter.');
+            const postEls = document.body.getElementsByClassName('entry unvoted');
+            for (const postEl of postEls)
+            {
+                observer.observe(postEl, observerParameters);
+            }
         }
     } else if (isNewReddit) {
         console.log('It\'s new reddit.');
@@ -63,10 +68,10 @@ function addShareButton(siblingElement: Element, position: 'right' | 'left'): vo
     const shareButtonDiv = document.createElement('div');
     shareButtonDiv.innerHTML = htmlString;
     shareButtonDiv.className = 'post-sharing-option better-share-button';
+    shareButtonDiv.addEventListener('click', shareButtonClick);
     if (position === 'right') {
         siblingElement.insertAdjacentElement('afterend', shareButtonDiv);
         console.log(shareButtonDiv);
-        shareButtonDiv.addEventListener('click', shareButtonClick);
     } else if (position === 'left') {
         siblingElement.parentElement?.insertBefore(shareButtonDiv, siblingElement.firstChild);
     }
@@ -76,9 +81,14 @@ function addShareButton(siblingElement: Element, position: 'right' | 'left'): vo
  * Gets the URL of the reddit post
  * @returns the URL of the reddit post
  */
-function getPostURL(): string {
-    
-    let url = window.location.toString();
+export function getPostURL(): string {
+    const linkInputEl = document.body.getElementsByClassName('post-sharing-link-input')[0];
+    let url: string | undefined;
+    if (linkInputEl) {
+        url = linkInputEl.getAttribute('value')?.toString();
+        url = url?.split('?')[0];
+    }
+    if (!url) url = window.location.toString();
     // TODO: get the URL from the input text box
     url = url.replace('old.reddit.', 'reddit.');
     url = url.replace('new.reddit.', 'reddit.');

@@ -11,5 +11,6 @@
       "firefox-webext-browser"
     ]
   },
-  "include": ["src", "global.d.ts"]
+  "include": ["src/**/*.ts", "global.d.ts"],
+  "exclude": ["node_modules", "tests", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

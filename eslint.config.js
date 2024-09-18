@@ -17,7 +17,13 @@ export default teslint.config(eslint.configs.recommended,
         },
     },
     {
-        files: ['vite.config.js'],
+        files: ['**/*.test.ts', "**/*.spec.ts"],
+        rules: {
+            'jsdoc/require-jsdoc': 'off',
+        }
+    },
+    {
+        files: ['*.js'],
         languageOptions: {
             globals: {
                 ...globals.node,

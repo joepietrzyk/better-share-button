@@ -8,7 +8,9 @@
     "watch": "vite build --watch",
     "start:firefox": "web-ext run --source-dir .",
     "lint": "eslint eslint.config.js --fix",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
@@ -16,10 +18,12 @@
     "eslint": "^9.10.0",
     "eslint-plugin-jsdoc": "^50.2.3",
     "globals": "^15.9.0",
+    "jsdom": "^25.0.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.6.0",
-    "vite": "^5.4.6"
+    "vite": "^5.4.6",
+    "vitest": "^2.1.1"
   },
   "private": true
 }

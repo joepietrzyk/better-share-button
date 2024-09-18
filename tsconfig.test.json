@@ -1,0 +1,12 @@
+﻿{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Add Vitest's global types only for tests
+    "types": ["vitest/globals"]
+  },
+  "include": [
+    "tests/**/*.ts",    // Specify the folder where your test files are located
+    "src/**/*.spec.ts", // If your tests are co-located with the source files
+    "src/**/*.test.ts"
+  ]
+}
