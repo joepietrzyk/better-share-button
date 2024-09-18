@@ -6,7 +6,7 @@
   "content_scripts" : [
     {
       "matches": ["*://*.reddit.com/*"],
-      "js": ["dist/content-scripts/reddit.bundle.js"]
+      "js": ["dist/reddit.bundle.js"]
     }
   ],
   "browser_action": {

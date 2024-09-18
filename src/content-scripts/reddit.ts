@@ -73,14 +73,23 @@ function addShareButton(siblingElement: Element, position: 'right' | 'left'): vo
 }
 
 /**
- * The behavior for when the custom share button is clicked
+ * Gets the URL of the reddit post
+ * @returns the URL of the reddit post
  */
-function shareButtonClick() {
+function getPostURL(): string {
+    
     let url = window.location.toString();
     // TODO: get the URL from the input text box
     url = url.replace('old.reddit.', 'reddit.');
     url = url.replace('new.reddit.', 'reddit.');
-    url = url.replace('reddit.', 'vxreddit.');
+    return url.replace('reddit.', 'vxreddit.');
+}
+
+/**
+ * The behavior for when the custom share button is clicked
+ */
+function shareButtonClick() {
+    const url = getPostURL();
     navigator.clipboard.writeText(url).then(() => {
         console.log('Copied ' + url + ' to clipboard!');
     });

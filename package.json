@@ -3,23 +3,23 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
-    "watch": "webpack --watch",
+    "watch": "vite build --watch",
     "start:firefox": "web-ext run --source-dir .",
-    "lint": "eslint eslint.config.mjs --fix",
-    "build": "webpack"
+    "lint": "eslint eslint.config.js --fix",
+    "build": "vite build"
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
     "@types/firefox-webext-browser": "^120.0.4",
     "eslint": "^9.10.0",
     "eslint-plugin-jsdoc": "^50.2.3",
-    "html-webpack-plugin": "^5.6.0",
+    "globals": "^15.9.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.6.0",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
+    "vite": "^5.4.6"
   },
   "private": true
 }
