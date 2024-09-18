@@ -1,0 +1,17 @@
+﻿{
+  "manifest_version": 2,
+  "name": "Better Share Button",
+  "version": "1.0",
+  "description": "Improves the share button on Reddit and X to ",
+  "content_scripts" : [
+    {
+      "matches": ["*://*.reddit.com/*"],
+      "js": ["dist/content-scripts/reddit.bundle.js"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": "assets/icon.png",
+    "default_title": "Browse Time",
+    "default_popup": "view.html"
+  }
+}
