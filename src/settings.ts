@@ -4,35 +4,62 @@ export type TwitterPreference = 'fxtwitter' | 'twittpr' | 'vxtwitter';
 export type InstagramPreference = 'ddinstagram';
 type PreferenceOverride<T> = 'default' | T;
 
-interface BSBPreferences { 
-        version: string;
+/**
+ * Base interface representing the common structure of all preference versions.
+ */
+interface BSBPreferences {
+    /**
+     * Version of the preferences format.
+     */
+    version: string;
 }
 
+/**
+ * Interface representing the preferences structure for version 1.
+ */
 interface BSBPreferences_v1 extends BSBPreferences {
-    version: '1',
-    reddit: RedditPreference,
-    x: XPreference,
-    twitter: TwitterPreference,
-    instagram: InstagramPreference,
+    /**
+     * Version identifier for v1 preferences.
+     */
+    version: '1';
+    /**
+     * User's preference for Reddit domains.
+     */
+    reddit: RedditPreference;
+    /**
+     * User's preference for X (formerly known as Twitter) domains.
+     */
+    x: XPreference;
+    /**
+     * User's preference for Twitter domains.
+     */
+    twitter: TwitterPreference;
+    /**
+     * User's preference for Instagram domains.
+     */
+    instagram: InstagramPreference;
 }
 
+/**
+ * Type representing user preferences based on the current version.
+ */
 export type UserPreferences = BSBPreferences_v1;
+
 const CURRENT_VERSION = '1';
 
 /**
- * Determines if the object is a preferences file of the current version
- * @param preferences The object we're checking
- * @returns true if the object is a Preferences object of the current version
+ * Determines if the object is a preferences file of the current version.
+ * @param preferences - The object to check.
+ * @returns True if the object is a valid `UserPreferences` object of the current version.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isPreferencesCurrentVersion(preferences: any): preferences is UserPreferences
-{
-    return (preferences && preferences.version && preferences.version === CURRENT_VERSION);
+function isPreferencesCurrentVersion(preferences: any): preferences is UserPreferences {
+    return preferences && preferences.version && preferences.version === CURRENT_VERSION;
 }
 
 /**
- * Creates a new preferences object from the defaults
- * @returns a preferences object from defaults
+ * Creates a new preferences object with default values.
+ * @returns A new `UserPreferences` object with default settings.
  */
 function defaultPreferences(): UserPreferences {
     return {
@@ -44,11 +71,12 @@ function defaultPreferences(): UserPreferences {
     };
 }
 
-let preferences: UserPreferences | null;
+let preferences: UserPreferences | null = null;
 
 /**
- * Loads the preferences
- * @returns a Promise containing the preferences
+ * Loads the user's preferences from local storage.
+ * If no preferences are found or the version is outdated, defaults are used.
+ * @returns A `Promise` that resolves to the loaded or default `UserPreferences`.
  */
 export async function loadPreferences(): Promise<UserPreferences> {
     if (preferences) return preferences;
@@ -57,17 +85,19 @@ export async function loadPreferences(): Promise<UserPreferences> {
         preferences = results.preferences;
         if (isPreferencesCurrentVersion(preferences)) {
             return preferences;
-        } 
+        }
     }
     preferences = defaultPreferences();
     await savePreferences();
-    return defaultPreferences();
+    return preferences;
 }
 
 /**
- * Saves the current preferences
+ * Saves the current preferences to local storage.
+ * If preferences are not set, the function does nothing.
+ * @returns A `Promise` that resolves when the preferences are saved.
  */
 export async function savePreferences(): Promise<void> {
     if (!preferences) return;
-    await browser.storage.local.set({preferences: preferences});
+    await browser.storage.local.set({ preferences });
 }
