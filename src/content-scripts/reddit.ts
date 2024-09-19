@@ -1,9 +1,9 @@
 ﻿import { isBrowser, isElement } from "../common";
-import { UserPreferences, loadPreferences } from "../settings";
+import {UserPreferences, loadPreferences, RedditPreference} from "../settings";
 
 // Run the main logic only when the script is executed directly
 if (isBrowser()) {
-    loadPreferences().then(preferences => main(preferences));
+  loadPreferences().then(preferences => main(preferences));
 }
 
 /**
@@ -26,27 +26,27 @@ interface RedditVersion {
  * @returns An object indicating whether the page is new or old Reddit.
  */
 function isNewOrOldReddit(): RedditVersion {
-    const hostName = window.location.hostname.split('.')[0];
-    let isNewReddit = false;
-    let isOldReddit = false;
+  const hostName = window.location.hostname.split('.')[0];
+  let isNewReddit = false;
+  let isOldReddit = false;
 
-    if (hostName === 'old') {
-        isOldReddit = true;
-    } else if (hostName === 'new') {
-        isNewReddit = true;
+  if (hostName === 'old') {
+    isOldReddit = true;
+  } else if (hostName === 'new') {
+    isNewReddit = true;
+  }
+
+  // Check for new Reddit by presence of shreddit-app
+  if (!isNewReddit && !isOldReddit) {
+    const shredditAppEls = document.getElementsByTagName('shreddit-app');
+    if (shredditAppEls && shredditAppEls.length > 0) {
+      isNewReddit = true;
+    } else {
+      isOldReddit = true;
     }
+  }
 
-    // Check for new Reddit by presence of shreddit-app
-    if (!isNewReddit && !isOldReddit) {
-        const shredditAppEls = document.getElementsByTagName('shreddit-app');
-        if (shredditAppEls && shredditAppEls.length > 0) {
-            isNewReddit = true;
-        } else {
-            isOldReddit = true;
-        }
-    }
-
-    return { isNewReddit, isOldReddit };
+  return { isNewReddit, isOldReddit };
 }
 
 /**
@@ -55,26 +55,26 @@ function isNewOrOldReddit(): RedditVersion {
  * @param preferences - The user's preferences for share button behavior.
  */
 function main(preferences: UserPreferences): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { isNewReddit, isOldReddit } = isNewOrOldReddit();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { isNewReddit, isOldReddit } = isNewOrOldReddit();
 
-    if (isOldReddit) {
-        const observer = new MutationObserver((mutationsList: MutationRecord[]) => {
-            mutationsList.forEach((mutation: MutationRecord) => {
-                mutation.addedNodes.forEach((element: Node) => {
-                    if (isElement(element) && element.classList.contains('post-sharing')) {
-                        attachRecursiveObservers(element, preferences);
-                    }
-                });
-            });
+  if (isOldReddit) {
+    const observer = new MutationObserver((mutationsList: MutationRecord[]) => {
+      mutationsList.forEach((mutation: MutationRecord) => {
+        mutation.addedNodes.forEach((element: Node) => {
+          if (isElement(element) && element.classList.contains('post-sharing')) {
+            attachRecursiveObservers(element, preferences);
+          }
         });
-        const observerParameters = { childList: true, subtree: true };
-        let appBody = document.querySelector('.content[role="main"]');
-        if (!appBody) {
-            appBody = document.body;
-        }
-        observer.observe(appBody, observerParameters);
+      });
+    });
+    const observerParameters = { childList: true, subtree: true };
+    let appBody = document.querySelector('.content[role="main"]');
+    if (!appBody) {
+      appBody = document.body;
     }
+    observer.observe(appBody, observerParameters);
+  }
 }
 
 /**
@@ -85,34 +85,34 @@ function main(preferences: UserPreferences): void {
  * @param preferences - The user's preferences for the share button behavior.
  */
 function attachRecursiveObservers(element: Element, preferences: UserPreferences): void {
-    if (!isElement(element)) {
-        return;
-    }
+  if (!isElement(element)) {
+    return;
+  }
 
-    if (element.classList.contains('post-sharing-option-embed')) {
-        addShareButton(element, 'right', preferences);
-        return;
-    }
+  if (element.classList.contains('post-sharing-option-embed')) {
+    addShareButton(element, 'right', preferences);
+    return;
+  }
 
-    const nestedObserver = new MutationObserver((nestedMutationsList: MutationRecord[]) => {
-        nestedMutationsList.forEach((nestedMutation: MutationRecord) => {
-            nestedMutation.addedNodes.forEach((nestedElement: Node) => {
-                if (isElement(nestedElement)) {
-                    attachRecursiveObservers(nestedElement, preferences);
-                }
-            });
-        });
+  const nestedObserver = new MutationObserver((nestedMutationsList: MutationRecord[]) => {
+    nestedMutationsList.forEach((nestedMutation: MutationRecord) => {
+      nestedMutation.addedNodes.forEach((nestedElement: Node) => {
+        if (isElement(nestedElement)) {
+          attachRecursiveObservers(nestedElement, preferences);
+        }
+      });
     });
+  });
 
-    nestedObserver.observe(element, {
-        childList: true,
-        subtree: true
-    });
+  nestedObserver.observe(element, {
+    childList: true,
+    subtree: true
+  });
 
-    const children = element.children;
-    for (let i = 0; i < children.length; i++) {
-        attachRecursiveObservers(children[i], preferences);
-    }
+  const children = element.children;
+  for (let i = 0; i < children.length; i++) {
+    attachRecursiveObservers(children[i], preferences);
+  }
 }
 
 /**
@@ -122,20 +122,20 @@ function attachRecursiveObservers(element: Element, preferences: UserPreferences
  * @param preferences - The user's preferences for the share button behavior.
  */
 function addShareButton(siblingElement: Element, position: 'right' | 'left', preferences: UserPreferences): void {
-    const htmlString = '<div class="c-tooltip" role="tooltip">' +
+  const htmlString = '<div class="c-tooltip" role="tooltip">' +
         '<div class="tooltip-arrow bottom"></div>' +
         '<div class="tooltip-inner">Better Embed Link</div></div>';
-    const shareButtonDiv = document.createElement('div');
-    shareButtonDiv.innerHTML = htmlString;
-    shareButtonDiv.className = 'post-sharing-option better-share-button';
-    shareButtonDiv.addEventListener('click', () => {
-        shareButtonClick(preferences);
-    });
-    if (position === 'right') {
-        siblingElement.insertAdjacentElement('afterend', shareButtonDiv);
-    } else if (position === 'left') {
-        siblingElement.parentElement?.insertBefore(shareButtonDiv, siblingElement.firstChild);
-    }
+  const shareButtonDiv = document.createElement('div');
+  shareButtonDiv.innerHTML = htmlString;
+  shareButtonDiv.className = 'post-sharing-option better-share-button';
+  shareButtonDiv.addEventListener('click', () => {
+    shareButtonClick(preferences);
+  });
+  if (position === 'right') {
+    siblingElement.insertAdjacentElement('afterend', shareButtonDiv);
+  } else if (position === 'left') {
+    siblingElement.parentElement?.insertBefore(shareButtonDiv, siblingElement.firstChild);
+  }
 }
 
 /**
@@ -143,37 +143,37 @@ function addShareButton(siblingElement: Element, position: 'right' | 'left', pre
  * @returns The URL of the Reddit post.
  */
 export function getPostURL(): string {
-    const linkInputEl = document.body.getElementsByClassName('post-sharing-link-input')[0];
-    let url: string | undefined;
-    if (linkInputEl) {
-        url = linkInputEl.getAttribute('value')?.toString();
-        url = url?.split('?')[0];
-    }
-    if (!url) url = window.location.toString();
-    url = url.replace('old.reddit.', 'reddit.');
-    url = url.replace('new.reddit.', 'reddit.');
-    return url;
+  const linkInputEl = document.body.getElementsByClassName('post-sharing-link-input')[0];
+  let url: string | undefined;
+  if (linkInputEl) {
+    url = linkInputEl.getAttribute('value')?.toString();
+    url = url?.split('?')[0];
+  }
+  if (!url) url = window.location.toString();
+  url = url.replace('old.reddit.', 'reddit.');
+  url = url.replace('new.reddit.', 'reddit.');
+  return url;
 }
 
 /**
  * Converts the given Reddit URL to a shareable URL based on user preferences.
  * @param url - The original Reddit URL.
- * @param preferences - The user's preferences for converting the URL.
+ * @param preference - The user's preferences for converting the URL.
  * @returns The converted, shareable URL.
  */
-export function convertToShareableURL(url: string, preferences: UserPreferences): string {
-    let newURL: string;
-    switch (preferences.reddit) {
-    case "rxddit":
-        newURL = url.replace('reddit.', 'rxddit.');
-        break;
-    case "vxreddit":
-        newURL = url.replace('reddit.', 'vxreddit.');
-        break;
-    default:
-        newURL = url;
-    }
-    return newURL;
+export function convertToShareableURL(url: string, preference: RedditPreference): string {
+  let newURL: string;
+  switch (preference) {
+  case "rxddit":
+    newURL = url.replace('reddit.', 'rxddit.');
+    break;
+  case "vxreddit":
+    newURL = url.replace('reddit.', 'vxreddit.');
+    break;
+  default:
+    newURL = url;
+  }
+  return newURL;
 }
 
 /**
@@ -182,9 +182,9 @@ export function convertToShareableURL(url: string, preferences: UserPreferences)
  * @param preferences - The user's preferences for converting and sharing the URL.
  */
 function shareButtonClick(preferences: UserPreferences): void {
-    let url = getPostURL();
-    url = convertToShareableURL(url, preferences);
-    navigator.clipboard.writeText(url).then(() => {
-        console.log('Copied ' + url + ' to clipboard!');
-    });
+  let url = getPostURL();
+  url = convertToShareableURL(url, preferences.reddit);
+  navigator.clipboard.writeText(url).then(() => {
+    console.log('Copied ' + url + ' to clipboard');
+  });
 }

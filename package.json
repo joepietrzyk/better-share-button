@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "vite build --mode development --sourcemap --watch",
     "start:firefox": "web-ext run --source-dir .",
-    "lint": "eslint eslint.config.js --fix",
+    "lint": "eslint --fix",
     "build": "vite build",
     "test": "vitest run",
     "test:watch": "vitest"

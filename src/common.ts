@@ -4,7 +4,7 @@
  * @returns true if the node is an Element
  */
 export function isElement(node: Node): node is Element {
-    return node.nodeType === 1;
+  return node.nodeType === 1;
 }
 
 /**
@@ -12,5 +12,5 @@ export function isElement(node: Node): node is Element {
  * @returns true if it is currently executing in a browser context
  */
 export function isBrowser(): boolean {
-    return process.env.NODE_ENV !== 'test';
+  return process.env.NODE_ENV !== 'test';
 }

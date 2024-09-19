@@ -2,6 +2,7 @@
 export type XPreference = 'fixupx';
 export type TwitterPreference = 'fxtwitter' | 'twittpr' | 'vxtwitter';
 export type InstagramPreference = 'ddinstagram';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type PreferenceOverride<T> = 'default' | T;
 
 /**
@@ -54,7 +55,7 @@ const CURRENT_VERSION = '1';
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isPreferencesCurrentVersion(preferences: any): preferences is UserPreferences {
-    return preferences && preferences.version && preferences.version === CURRENT_VERSION;
+  return preferences && preferences.version && preferences.version === CURRENT_VERSION;
 }
 
 /**
@@ -62,13 +63,13 @@ function isPreferencesCurrentVersion(preferences: any): preferences is UserPrefe
  * @returns A new `UserPreferences` object with default settings.
  */
 function defaultPreferences(): UserPreferences {
-    return {
-        version: '1',
-        reddit: 'vxreddit',
-        x: 'fixupx',
-        twitter: 'fxtwitter',
-        instagram: 'ddinstagram',
-    };
+  return {
+    version: '1',
+    reddit: 'vxreddit',
+    x: 'fixupx',
+    twitter: 'fxtwitter',
+    instagram: 'ddinstagram',
+  };
 }
 
 let preferences: UserPreferences | null = null;
@@ -79,17 +80,17 @@ let preferences: UserPreferences | null = null;
  * @returns A `Promise` that resolves to the loaded or default `UserPreferences`.
  */
 export async function loadPreferences(): Promise<UserPreferences> {
-    if (preferences) return preferences;
-    const results = await browser.storage.local.get('preferences');
-    if (results.preferences) {
-        preferences = results.preferences;
-        if (isPreferencesCurrentVersion(preferences)) {
-            return preferences;
-        }
+  if (preferences) return preferences;
+  const results = await browser.storage.local.get('preferences');
+  if (results.preferences) {
+    preferences = results.preferences;
+    if (isPreferencesCurrentVersion(preferences)) {
+      return preferences;
     }
-    preferences = defaultPreferences();
-    await savePreferences();
-    return preferences;
+  }
+  preferences = defaultPreferences();
+  await savePreferences();
+  return preferences;
 }
 
 /**
@@ -98,6 +99,6 @@ export async function loadPreferences(): Promise<UserPreferences> {
  * @returns A `Promise` that resolves when the preferences are saved.
  */
 export async function savePreferences(): Promise<void> {
-    if (!preferences) return;
-    await browser.storage.local.set({ preferences });
+  if (!preferences) return;
+  await browser.storage.local.set({ preferences });
 }
