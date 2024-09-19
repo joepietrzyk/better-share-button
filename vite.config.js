@@ -10,26 +10,20 @@ export default defineConfig({
                 reddit: resolve(__dirname, 'src/content-scripts/reddit.ts'),
             },
             output: {
-                entryFileNames: '[name].bundle.js', // Customize the output filename
+                entryFileNames: '[name].bundle.js',
                 chunkFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
             },
         },
-        outDir: resolve(__dirname, 'dist'), // Set output directory
+        outDir: resolve(__dirname, 'dist'),
         emptyOutDir: true, // Equivalent to Webpack's 'clean: true'
     },
-
-    // Vite supports .ts and .js files out of the box
     resolve: {
         extensions: ['.ts', '.js'],
     },
-
-    // Environment variables (replaces DefinePlugin)
     define: {
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
     },
-
-    // Vite plugins (if you need any, like Vue, React, etc.)
     plugins: [{
         name: 'remove-src-dir-from-html-path',
         enforce: 'post',
