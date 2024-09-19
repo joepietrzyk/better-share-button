@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "watch": "vite build --watch",
+    "watch": "vite build --mode development --sourcemap --watch",
     "start:firefox": "web-ext run --source-dir .",
     "lint": "eslint eslint.config.js --fix",
     "build": "vite build",
