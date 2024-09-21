@@ -5,7 +5,7 @@
     "types": ["vitest/globals"]
   },
   "include": [
-    "tests/**/*.ts",    // Specify the folder where your test files are located
+    "test/**/*.ts",    // Specify the folder where your test files are located
     "src/**/*.spec.ts", // If your tests are co-located with the source files
     "src/**/*.test.ts"
   ]

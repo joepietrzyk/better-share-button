@@ -1,5 +1,6 @@
-﻿import { isBrowser, isElement } from "../common";
+﻿import {clipboardToast, isBrowser, isElement} from "../common";
 import {UserPreferences, loadPreferences, RedditPreference} from "../settings";
+import './reddit-styles.css';
 
 // Run the main logic only when the script is executed directly
 if (isBrowser()) {
@@ -25,7 +26,7 @@ interface RedditVersion {
  * Determines if the current page is using new or old Reddit.
  * @returns An object indicating whether the page is new or old Reddit.
  */
-function isNewOrOldReddit(): RedditVersion {
+export function isNewOrOldReddit(): RedditVersion {
   const hostName = window.location.hostname.split('.')[0];
   let isNewReddit = false;
   let isOldReddit = false;
@@ -122,14 +123,14 @@ function attachRecursiveObservers(element: Element, preferences: UserPreferences
  * @param preferences - The user's preferences for the share button behavior.
  */
 function addShareButton(siblingElement: Element, position: 'right' | 'left', preferences: UserPreferences): void {
-  const htmlString = '<div class="c-tooltip" role="tooltip">' +
-        '<div class="tooltip-arrow bottom"></div>' +
-        '<div class="tooltip-inner">Better Embed Link</div></div>';
+  const htmlString = '<div class="bsb-c-tooltip" role="tooltip">' +
+        '<div class="bsb-tooltip-arrow bottom"></div>' +
+        '<div class="bsb-tooltip-inner">Better Embed Link</div></div>';
   const shareButtonDiv = document.createElement('div');
   shareButtonDiv.innerHTML = htmlString;
-  shareButtonDiv.className = 'post-sharing-option better-share-button';
-  shareButtonDiv.addEventListener('click', () => {
-    shareButtonClick(preferences);
+  shareButtonDiv.className = 'bsb-post-sharing-option';
+  shareButtonDiv.addEventListener('click', event => {
+    shareButtonClick(event, preferences);
   });
   if (position === 'right') {
     siblingElement.insertAdjacentElement('afterend', shareButtonDiv);
@@ -178,13 +179,16 @@ export function convertToShareableURL(url: string, preference: RedditPreference)
 
 /**
  * Handles the behavior when the custom share button is clicked.
- * Copies the converted shareable URL to the clipboard.
- * @param preferences - The user's preferences for converting and sharing the URL.
+ * Converts the current post URL to a shareable URL based on the user's preferences,
+ * copies the URL to the clipboard, and displays a toast notification anchored to the button element.
+ * @param event - The mouse event triggering the click
+ * @param preferences - The user's preferences for converting and sharing the URL, including specific platform settings.
  */
-function shareButtonClick(preferences: UserPreferences): void {
+function shareButtonClick(event: MouseEvent, preferences: UserPreferences): void {
+  const { clientX: x, clientY: y } = event;
   let url = getPostURL();
   url = convertToShareableURL(url, preferences.reddit);
   navigator.clipboard.writeText(url).then(() => {
-    console.log('Copied ' + url + ' to clipboard');
+    clipboardToast(x, y);
   });
 }

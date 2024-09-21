@@ -1,6 +1,8 @@
 ﻿// @ts-check
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import * as path from "node:path";
 
 export default defineConfig({
   build: {
@@ -36,5 +38,10 @@ export default defineConfig({
         outputItem.fileName = outputItem.fileName.replace('src/', '');
       }
     }
-  }],
+  },
+  cssInjectedByJsPlugin({
+    jsAssetsFilterFunction: outputChunk => {
+      return outputChunk.facadeModuleId && outputChunk.facadeModuleId.includes('content-scripts/');
+    }
+  })],
 });

@@ -9,7 +9,8 @@
     "outDir": "dist",
     "types": [
       "firefox-webext-browser"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "global.d.ts"],
   "exclude": ["node_modules", "tests", "src/**/*.spec.ts", "src/**/*.test.ts"]

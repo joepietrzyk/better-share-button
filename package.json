@@ -13,11 +13,14 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "toastify-js": "^1.12.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
     "@types/firefox-webext-browser": "^120.0.4",
+    "@types/jsdom": "^21.1.7",
+    "@types/toastify-js": "^1.12.3",
     "eslint": "^9.10.0",
     "eslint-plugin-jsdoc": "^50.2.3",
     "globals": "^15.9.0",
@@ -26,6 +29,7 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.6.0",
     "vite": "^5.4.6",
+    "vite-plugin-css-injected-by-js": "^3.5.1",
     "vitest": "^2.1.1",
     "web-ext": "^8.3.0"
   },
