@@ -58,6 +58,7 @@ export function isNewOrOldReddit(): RedditVersion {
 function main(preferences: UserPreferences): void {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isNewReddit, isOldReddit } = isNewOrOldReddit();
+  console.log('loaded');
 
   if (isOldReddit) {
     const observer = new MutationObserver((mutationsList: MutationRecord[]) => {
@@ -65,6 +66,13 @@ function main(preferences: UserPreferences): void {
         mutation.addedNodes.forEach((element: Node) => {
           if (isElement(element) && element.classList.contains('post-sharing')) {
             attachRecursiveObservers(element, preferences);
+            /* 
+                      if (isElement(element) && element.classList.contains('post-sharing')) {
+            attachObserversToSubtree(element, 'post-sharing-option-embed', e => {
+              addShareButton(e, 'right', preferences);
+            });
+          }
+             */
           }
         });
       });

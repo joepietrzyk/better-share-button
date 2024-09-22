@@ -54,3 +54,43 @@ export function clipboardToast(x: number, y: number): void {
     }
   }
 }
+
+/**
+ * Recursively attaches mutation observers to the given element and its children.
+ * Observes for specific key elements (such as the share buttons or post-sharing containers),
+ * and disconnects when the button is found.
+ * @param element - The element to attach observers to.
+ * @param targetClassname
+ * @param callback
+ */
+export function attachObserversToSubtree(element: Element, targetClassname: string, 
+  callback: (element: Element) => void): void {
+  if (!isElement(element)) {
+    return;
+  }
+
+  if (element.classList.contains(targetClassname)) {
+    callback(element);
+    return;
+  }
+
+  const nestedObserver = new MutationObserver((nestedMutationsList: MutationRecord[]) => {
+    nestedMutationsList.forEach((nestedMutation: MutationRecord) => {
+      nestedMutation.addedNodes.forEach((nestedElement: Node) => {
+        if (isElement(nestedElement)) {
+          attachObserversToSubtree(nestedElement, targetClassname, callback);
+        }
+      });
+    });
+  });
+
+  nestedObserver.observe(element, {
+    childList: true,
+    subtree: true
+  });
+
+  const children = element.children;
+  for (let i = 0; i < children.length; i++) {
+    attachObserversToSubtree(children[i], targetClassname, callback);
+  }
+}

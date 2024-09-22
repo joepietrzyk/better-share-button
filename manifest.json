@@ -7,6 +7,10 @@
     {
       "matches": ["*://*.reddit.com/*"],
       "js": ["dist/reddit.bundle.js"]
+    },
+    {
+      "matches": ["*://*.x.com/*", "*://*.twitter.com/*"],
+      "js": ["dist/x.bundle.js"]
     }
   ],
   "permissions": [ "storage" ],
