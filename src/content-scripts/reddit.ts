@@ -58,7 +58,6 @@ export function isNewOrOldReddit(): RedditVersion {
 function main(preferences: UserPreferences): void {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isNewReddit, isOldReddit } = isNewOrOldReddit();
-  console.log('loaded');
 
   if (isOldReddit) {
     const observer = new MutationObserver((mutationsList: MutationRecord[]) => {

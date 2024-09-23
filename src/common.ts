@@ -56,15 +56,16 @@ export function clipboardToast(x: number, y: number): void {
 }
 
 /**
- * Recursively attaches mutation observers to the given element and its children.
- * Observes for specific key elements (such as the share buttons or post-sharing containers),
- * and disconnects when the button is found.
- * @param element - The element to attach observers to.
- * @param targetClassname
- * @param callback
+ * Attaches mutation observers to the given element and its children.
+ * Observes for specific elements matching the target class name, and triggers a callback when found.
+ * Disconnects the observer when the target element is detected.
+ * @param element - The root element to attach observers to.
+ * @param targetClassname - The class name of the target element to observe.
+ * @param callback - A function to call when an element with the target class is found.
  */
 export function attachObserversToSubtree(element: Element, targetClassname: string, 
   callback: (element: Element) => void): void {
+
   if (!isElement(element)) {
     return;
   }

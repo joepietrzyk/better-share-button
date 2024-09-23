@@ -2,6 +2,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { fileURLToPath } from 'url';
 import WebpackExtensionManifestPlugin from "webpack-extension-manifest-plugin";
+//import CopyPlugin from "copy-webpack-plugin";
   
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,7 +49,12 @@ export default (env, argv) => ({
       },
       pkgJsonProps: ['version', 'description'],
       minify: argv.mode === 'production',
-    })
+    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     { from: '/assets', to: 'assets' }
+    //   ]
+    // })
   ],
   devtool: argv.mode === 'development' ? 'source-map' : false,
 });
