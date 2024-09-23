@@ -1,17 +1,19 @@
 ﻿import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { fileURLToPath } from 'url';
+import WebpackExtensionManifestPlugin from "webpack-extension-manifest-plugin";
   
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-  
-export default {
-  mode: process.env.NODE_ENV || 'production',
+
+export default (env, argv) => ({
+  mode: argv.mode || 'production',
   context: path.resolve(__dirname, 'src'),
   entry: {
     reddit: './content-scripts/reddit.ts',
     x: './content-scripts/x.ts',
-    settings: './settings-page/script.ts',
+    options: './options-ui/index.ts',
+    popup: './popup/index.ts',
   },
   output: {
     filename: '[name].bundle.js',
@@ -36,10 +38,17 @@ export default {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './settings-page/index.html',
-      filename: 'settings.html',
-      chunks: ['settings'],
+      template: './options-ui/index.html',
+      filename: 'options.html',
+      chunks: ['options'],
     }),
+    new WebpackExtensionManifestPlugin({
+      config: {
+        base: './manifest.json',
+      },
+      pkgJsonProps: ['version', 'description'],
+      minify: argv.mode === 'production',
+    })
   ],
-  devtool: process.env.NODE_ENV === 'development' ? 'source-map' : false,
-};
+  devtool: argv.mode === 'development' ? 'source-map' : false,
+});

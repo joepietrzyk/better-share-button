@@ -6,10 +6,11 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "types": [
-      "firefox-webext-browser"
+      "firefox-webext-browser",
+      "vitest/globals"
     ],
     "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "global.d.ts"],
-  "exclude": ["node_modules", "tests", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "exclude": ["node_modules", "test", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

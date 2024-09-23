@@ -1,5 +1,4 @@
-import {describe, expect, it, vi} from 'vitest';
-import {mockWindowURL} from "../../test/helpers.test";
+import {mockWindowURL} from '../../test/helpers.test';
 import {isNewOrOldReddit} from "./reddit";
 import {readFileSync} from 'fs';
 import {resolve} from 'path';

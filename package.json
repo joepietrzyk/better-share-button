@@ -1,12 +1,12 @@
 {
   "name": "better-share-button",
   "version": "1.0.0",
-  "description": "",
+  "description": "Improves the share button on Reddit and X to be friendly with Discord embedding",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "watch": "vite build --mode development --sourcemap --watch",
-    "start:firefox": "web-ext run --source-dir .",
+    "watch": "webpack --watch --mode development",
+    "start:firefox": "web-ext run --source-dir ./dist",
     "lint": "eslint --fix",
     "build": "webpack --mode production",
     "test": "vitest run",
@@ -34,7 +34,8 @@
     "vitest": "^2.1.1",
     "web-ext": "^8.3.0",
     "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-extension-manifest-plugin": "^0.8.0"
   },
   "private": true
 }
