@@ -14,15 +14,15 @@ if (isBrowser()) {
 function main(preferences: UserPreferences)
 {
   for (const preferenceKey of Object.keys(preferences) as (keyof UserPreferences)[]) {
-    const select = document.body.querySelector(`#${preferenceKey}`) as HTMLSelectElement | null;
-    if (!select) continue;
+    const selectorEl = document.body.querySelector(`#${preferenceKey}`) as HTMLSelectElement | null;
+    if (!selectorEl) continue;
 
     // Set the select value based on the loaded preferences.
-    select.value = preferences[preferenceKey] as string;
+    selectorEl.value = preferences[preferenceKey] as string;
 
     // Add event listener to save the updated preference when changed.
-    select.addEventListener('change', async () => {
-      preferences[preferenceKey] = select.value as never; // Safely update the preference.
+    selectorEl.addEventListener('change', async () => {
+      preferences[preferenceKey] = selectorEl.value as never; // Safely update the preference.
       await savePreferences();
     });
   }
