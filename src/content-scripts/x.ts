@@ -59,6 +59,8 @@ function afterLoading(preferences: UserPreferences) {
                     const element = tempDiv.children[0];
                     // const hoverClass = 'r-1cuuowz'
                     element.setAttribute('bsb-share-shareButton', 'true');
+                    element.addEventListener('mouseenter', () => {element.classList.add('r-1cuuowz');});
+                    element.addEventListener('mouseleave', () => {element.classList.remove('r-1cuuowz');});
                     // change the text of our newly copied node
                     if (element && element.children[1]) {
                       const span = element.children[1].getElementsByTagName('span')[0];
@@ -118,6 +120,15 @@ export function convertXLink(link: string, preference: XPreference): string
   switch (preference) {
   case "fixupx":
     url = url.replace('x.com', 'fixupx.com');
+    break;
+  case "fxtwitter":
+    url = url.replace('x.com', 'fxtwitter.com');
+    break;
+  case "twittpr":
+    url = url.replace('x.com', 'twittpr.com');
+    break;
+  case "vxtwitter":
+    url = url.replace('x.com', 'vxtwitter.com');
     break;
   }
   

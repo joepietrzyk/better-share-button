@@ -1,6 +1,5 @@
 ﻿export type RedditPreference = 'rxddit' | 'vxreddit';
-export type XPreference = 'fixupx';
-export type TwitterPreference = 'fxtwitter' | 'twittpr' | 'vxtwitter';
+export type XPreference = 'fixupx' | 'fxtwitter' | 'twittpr' | 'vxtwitter';
 export type InstagramPreference = 'ddinstagram';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type PreferenceOverride<T> = 'default' | T;
@@ -31,10 +30,6 @@ interface BSBPreferences_v1 extends BSBPreferences {
      * User's preference for X (formerly known as Twitter) domains.
      */
     x: XPreference;
-    /**
-     * User's preference for Twitter domains.
-     */
-    twitter: TwitterPreference;
     /**
      * User's preference for Instagram domains.
      */
@@ -67,7 +62,6 @@ function defaultPreferences(): UserPreferences {
     version: '1',
     reddit: 'vxreddit',
     x: 'fixupx',
-    twitter: 'fxtwitter',
     instagram: 'ddinstagram',
   };
 }
