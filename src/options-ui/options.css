@@ -1,0 +1,9 @@
+﻿body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+    background: #23222B;
+}
+
+.hidden {
+    display: none;
+}
