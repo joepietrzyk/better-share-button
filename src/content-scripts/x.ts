@@ -116,7 +116,7 @@ function afterLoading(preferences: UserPreferences) {
  */
 export function convertXLink(link: string, preference: XPreference): string
 {
-  let url = link;
+  let url = link.replace('twitter.com', 'x.com');
   switch (preference) {
   case "fixupx":
     url = url.replace('x.com', 'fixupx.com');
@@ -130,6 +130,8 @@ export function convertXLink(link: string, preference: XPreference): string
   case "vxtwitter":
     url = url.replace('x.com', 'vxtwitter.com');
     break;
+  default:
+    return link;
   }
   
   return url;
