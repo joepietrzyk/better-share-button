@@ -13,14 +13,16 @@ if (isBrowser()) {
  */
 function main(preferences: UserPreferences)
 {
-  for (const preference in preferences) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const p = preferences as any;
-    const select = document.body.querySelector(`#${preference}`) as HTMLSelectElement | null;
+  for (const preferenceKey of Object.keys(preferences) as (keyof UserPreferences)[]) {
+    const select = document.body.querySelector(`#${preferenceKey}`) as HTMLSelectElement | null;
     if (!select) continue;
-    select.value = p[preference];
+
+    // Set the select value based on the loaded preferences.
+    select.value = preferences[preferenceKey] as string;
+
+    // Add event listener to save the updated preference when changed.
     select.addEventListener('change', async () => {
-      p[preference] = select.value;
+      preferences[preferenceKey] = select.value as never; // Safely update the preference.
       await savePreferences();
     });
   }
