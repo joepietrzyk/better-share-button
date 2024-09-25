@@ -94,5 +94,5 @@ export async function loadPreferences(): Promise<UserPreferences> {
  */
 export async function savePreferences(): Promise<void> {
   if (!preferences) return;
-  await browser.storage.local.set({ preferences });
+  await browser.storage.local.set({ preferences, });
 }

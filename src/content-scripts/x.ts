@@ -1,5 +1,5 @@
-import {loadPreferences, UserPreferences, XPreference} from "../settings";
-import {clipboardToast, isBrowser, isElement} from "../common";
+import {loadPreferences, UserPreferences, XPreference} from '../settings';
+import {clipboardToast, isBrowser, isElement} from '../common';
 
 // the CSS class used by dropdown menu items when hovered
 const MENU_HOVER_CLASS = 'r-1cuuowz';
@@ -37,7 +37,7 @@ function main(preferences: UserPreferences)
           const shareButton = shareSvg.closest('button') as Element | undefined;
           if (!shareButton) return;
           shareButton.addEventListener('click', () => {
-            const links = [...article[0].querySelectorAll(POST_LINK_QUERY_SELECTOR)].filter(link => {
+            const links = [...article[0].querySelectorAll(POST_LINK_QUERY_SELECTOR),].filter(link => {
               const href = link.getAttribute('href');
               return href && href.split('/').length > 1 && !href.includes('hashtag');
             });
@@ -81,7 +81,7 @@ function main(preferences: UserPreferences)
     });
   });
 
-  observer.observe(document.body, {childList: true, subtree: true});
+  observer.observe(document.body, {childList: true, subtree: true,});
 
 }
 
@@ -95,16 +95,16 @@ export function convertXLink(link: string, preference: XPreference): string
 {
   let url = link.replace('twitter.com', 'x.com');
   switch (preference) {
-  case "fixupx":
+  case 'fixupx':
     url = url.replace('x.com', 'fixupx.com');
     break;
-  case "fxtwitter":
+  case 'fxtwitter':
     url = url.replace('x.com', 'fxtwitter.com');
     break;
-  case "twittpr":
+  case 'twittpr':
     url = url.replace('x.com', 'twittpr.com');
     break;
-  case "vxtwitter":
+  case 'vxtwitter':
     url = url.replace('x.com', 'vxtwitter.com');
     break;
   default:

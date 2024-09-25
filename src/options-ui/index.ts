@@ -1,6 +1,6 @@
-﻿import {loadPreferences, savePreferences, UserPreferences} from "../settings";
-import {isBrowser} from "../common";
-import "./options.css";
+﻿import {loadPreferences, savePreferences, UserPreferences} from '../settings';
+import {isBrowser} from '../common';
+import './options.css';
 
 if (isBrowser()) {
   loadPreferences().then(preferences => main(preferences));

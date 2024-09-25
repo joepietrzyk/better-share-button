@@ -1,5 +1,5 @@
-﻿import {clipboardToast, isBrowser, isElement} from "../common";
-import {UserPreferences, loadPreferences, RedditPreference} from "../settings";
+﻿import {clipboardToast, isBrowser, isElement} from '../common';
+import {UserPreferences, loadPreferences, RedditPreference} from '../settings';
 import './reddit-styles.css';
 
 // Run the main logic only when the script is executed directly
@@ -47,7 +47,7 @@ export function isNewOrOldReddit(): RedditVersion {
     }
   }
 
-  return { isNewReddit, isOldReddit };
+  return { isNewReddit, isOldReddit, };
 }
 
 /**
@@ -57,7 +57,7 @@ export function isNewOrOldReddit(): RedditVersion {
  */
 function main(preferences: UserPreferences): void {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { isNewReddit, isOldReddit } = isNewOrOldReddit();
+  const { isNewReddit, isOldReddit, } = isNewOrOldReddit();
 
   if (isOldReddit) {
     const observer = new MutationObserver((mutationsList: MutationRecord[]) => {
@@ -76,7 +76,7 @@ function main(preferences: UserPreferences): void {
         });
       });
     });
-    const observerParameters = { childList: true, subtree: true };
+    const observerParameters = { childList: true, subtree: true, };
     let appBody = document.querySelector('.content[role="main"]');
     if (!appBody) {
       appBody = document.body;
@@ -114,7 +114,7 @@ function attachRecursiveObservers(element: Element, preferences: UserPreferences
 
   nestedObserver.observe(element, {
     childList: true,
-    subtree: true
+    subtree: true,
   });
 
   const children = element.children;
@@ -172,10 +172,10 @@ export function getPostURL(): string {
 export function convertToShareableURL(url: string, preference: RedditPreference): string {
   let newURL: string;
   switch (preference) {
-  case "rxddit":
+  case 'rxddit':
     newURL = url.replace('reddit.', 'rxddit.');
     break;
-  case "vxreddit":
+  case 'vxreddit':
     newURL = url.replace('reddit.', 'vxreddit.');
     break;
   default:
@@ -192,7 +192,7 @@ export function convertToShareableURL(url: string, preference: RedditPreference)
  * @param preferences - The user's preferences for converting and sharing the URL, including specific platform settings.
  */
 function shareButtonClick(event: MouseEvent, preferences: UserPreferences): void {
-  const { clientX: x, clientY: y } = event;
+  const { clientX: x, clientY: y, } = event;
   let url = getPostURL();
   url = convertToShareableURL(url, preferences.reddit);
   navigator.clipboard.writeText(url).then(() => {

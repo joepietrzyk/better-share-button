@@ -1,4 +1,4 @@
-﻿import Toastify from "toastify-js";
+﻿import Toastify from 'toastify-js';
 
 /**
  * Determines if a Node is an Element
@@ -30,23 +30,24 @@ export function clipboardToast(x: number, y: number): void {
   const lastToast = document.querySelector('.toastify');
   if (!lastToast) {
     Toastify({
-      text: "Copied to clipboard",
+      text: 'Copied to clipboard',
       duration: 1000,
       position: 'left',
       gravity: 'top',
       close: false,
       style: {
-        background: "#333",
-        color: "white",
-        borderRadius: "5px",
-        padding: "10px",
-        zIndex: "1000",
+        background: '#333',
+        color: 'white',
+        borderRadius: '5px',
+        padding: '10px',
+        zIndex: '1000',
+        'font-family': 'inherit',
       },
     }).showToast();
 
     const lastToast = document.querySelector('.toastify') as HTMLElement;
     if (lastToast) {
-      lastToast.style.position = "fixed";
+      lastToast.style.position = 'fixed';
       lastToast.style.left = `${x}px`;
       lastToast.style.top = `${y}px`;
       lastToast.setAttribute('tabindex', '-1');
@@ -87,7 +88,7 @@ export function attachObserversToSubtree(element: Element, targetClassname: stri
 
   nestedObserver.observe(element, {
     childList: true,
-    subtree: true
+    subtree: true,
   });
 
   const children = element.children;
