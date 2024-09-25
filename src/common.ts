@@ -42,6 +42,7 @@ export function clipboardToast(x: number, y: number): void {
         padding: '10px',
         zIndex: '1000',
         'font-family': 'inherit',
+        cursor: 'default',
       },
     }).showToast();
 

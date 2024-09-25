@@ -1,6 +1,7 @@
 {
   "name": "better-share-button",
   "version": "1.0.0",
+  "license": "MIT",
   "description": "Improves the share button on Reddit and X to be friendly with Discord embedding",
   "main": "dist/index.js",
   "type": "module",
