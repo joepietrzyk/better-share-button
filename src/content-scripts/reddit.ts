@@ -65,13 +65,6 @@ function main(preferences: UserPreferences): void {
         mutation.addedNodes.forEach((element: Node) => {
           if (isElement(element) && element.classList.contains('post-sharing')) {
             attachRecursiveObservers(element, preferences);
-            /* 
-                      if (isElement(element) && element.classList.contains('post-sharing')) {
-            attachObserversToSubtree(element, 'post-sharing-option-embed', e => {
-              addShareButton(e, 'right', preferences);
-            });
-          }
-             */
           }
         });
       });

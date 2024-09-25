@@ -1,53 +1,58 @@
-import {mockWindowURL} from '../../test/helpers.test';
 import {isNewOrOldReddit} from './reddit';
-import {readFileSync} from 'fs';
-import {resolve} from 'path';
 import {JSDOM} from 'jsdom';
+
+function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
+  vi.stubGlobal('location', {
+    href: `https://${newOrOld}reddit.com${pathname}`,
+    protocol: 'https:',
+    host: `${newOrOld}reddit.com`,
+    hostname: `${newOrOld}reddit.com`,
+    pathname: pathname,
+  });
+}
 
 describe('isNewOrOldReddit', () => {
   it('should recognize the window URL as new.reddit.com', () => {
-    mockWindowURL('https://new.reddit.com/r/funny');
+    mockRedditURL('new.');
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(true);
     expect(actual.isOldReddit).toBe(false);
-    vi.restoreAllMocks();
   });
 
   it('should recognize the window URL as old.reddit.com', () => {
-    mockWindowURL('https://old.reddit.com/r/funny');
+    mockRedditURL('old.');
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(false);
     expect(actual.isOldReddit).toBe(true);
-    vi.restoreAllMocks();
   });
 
-  it('should recognize old reddit html as old reddit', () => {
-    mockWindowURL('https://reddit.com/r/funny');
-    const filePath = resolve(__dirname, '__tests__/old.reddit.html');
-    const htmlContent = readFileSync(filePath, 'utf-8');
+  it('should recognize new reddit html as new reddit', () => {
+    mockRedditURL();
+    const htmlContent = '<shreddit-app></shreddit-app>';
     const dom = new JSDOM(htmlContent);
-    global['window'] = dom.window as never;
-    global['document'] = dom.window.document;
+    vi.stubGlobal('window', dom.window);
+    vi.stubGlobal('document', dom.window.document);
+
+    const actual = isNewOrOldReddit();
+    expect(actual.isNewReddit).toBe(true);
+    expect(actual.isOldReddit).toBe(false);
+    dom.window.close();
+  });
+
+  it('should treat all non-new reddit html as old reddit', () => {
+    mockRedditURL();
+    const htmlContent = '<div>This is reddit!</div>';
+    const dom = new JSDOM(htmlContent);
+    vi.stubGlobal('window', dom.window);
+    vi.stubGlobal('document', dom.window.document);
     
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(false);
     expect(actual.isOldReddit).toBe(true);
     dom.window.close();
-    vi.restoreAllMocks();
   });
-
-  it('should recognize new reddit html as new reddit', () => {
-    mockWindowURL('https://reddit.com/r/funny');
-    const filePath = resolve(__dirname, '__tests__/new.reddit.html');
-    const htmlContent = readFileSync(filePath, 'utf-8');
-    const dom = new JSDOM(htmlContent);
-    global['window'] = dom.window as never;
-    global['document'] = dom.window.document;
-
-    const actual = isNewOrOldReddit();
-    expect(actual.isNewReddit).toBe(true);
-    expect(actual.isOldReddit).toBe(false);
-    dom.window.close();
-    vi.restoreAllMocks();
+  
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 });
