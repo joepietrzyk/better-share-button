@@ -41,8 +41,15 @@ function main(preferences: UserPreferences)
               const href = link.getAttribute('href');
               return href && href.split('/').length > 1 && !href.includes('hashtag');
             });
-            if (links.length === 0) return;
-            href = links[0].getAttribute('href') || href;
+            
+            // if we're currently viewing a tweet instead of the feed, it won't have the href link
+            if (links.length > 0) {
+              href = links[0].getAttribute('href') || href;
+            } else {
+              href = window.location.href;
+              href = href.replace('https://', '').replace('https://', '').replace('x.com', '')
+                .replace('twitter.com','');
+            }
           });
           // check for the share menu
         } else {
@@ -62,6 +69,8 @@ function main(preferences: UserPreferences)
           (newMenuItem as HTMLDivElement).addEventListener('click', event => {
             let url = 'https://' + window.location.hostname + href;
             url = convertXLink(url, preferences.x);
+            const dropdownParent = dropdown.closest('[role="menu"]');
+            (dropdownParent?.previousElementSibling?.previousElementSibling as HTMLElement | undefined)?.click();
             navigator.clipboard.writeText(url).then(() => {
               clipboardToast(event.clientX, event.clientY);
             });
