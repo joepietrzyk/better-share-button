@@ -200,7 +200,7 @@ describe('getDropdown', () => {
 
   it('should ignore dropdowns with our custom attribute added', () => {
     const oldDropdownItem = document.body.querySelector('#dropdown')!.children[0]!;
-    oldDropdownItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE,'true');
+    oldDropdownItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE, 'true');
     
     const actual = getDropdown(document.body);
     expect(actual).toBeNull();

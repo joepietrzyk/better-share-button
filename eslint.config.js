@@ -21,6 +21,7 @@ export default [
       'quotes': ['error', 'single',],
       'comma-dangle': ['error', { arrays: 'always', objects: 'always',},],
       'brace-style': ['error', '1tbs',],
+      'comma-spacing': ['error', { before: false, after: true, },],
     },
   },
   {
