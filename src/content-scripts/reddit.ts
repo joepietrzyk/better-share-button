@@ -1,5 +1,5 @@
 ﻿import {clipboardToast, isBrowser, isElement} from '../common';
-import {UserPreferences, loadPreferences, RedditPreference} from '../settings';
+import {loadPreferences, RedditPreference, UserPreferences} from '../settings';
 import './reddit-styles.css';
 
 // Run the main logic only when the script is executed directly
@@ -60,89 +60,73 @@ function main(preferences: UserPreferences): void {
   const { isNewReddit, isOldReddit, } = isNewOrOldReddit();
 
   if (isOldReddit) {
-    const observer = new MutationObserver((mutationsList: MutationRecord[]) => {
-      mutationsList.forEach((mutation: MutationRecord) => {
-        mutation.addedNodes.forEach((element: Node) => {
-          if (isElement(element) && element.classList.contains('post-sharing')) {
-            attachRecursiveObservers(element, preferences);
-            /* 
-                      if (isElement(element) && element.classList.contains('post-sharing')) {
-            attachObserversToSubtree(element, 'post-sharing-option-embed', e => {
-              addShareButton(e, 'right', preferences);
-            });
-          }
-             */
-          }
-        });
+    const appBody = getAppBody();
+    const observer = createEmbedButtonObserver(embedButton => {
+      addShareButton(embedButton, 'right', (event) => {
+        let url = getPostURL();
+        url = convertToShareableURL(url, preferences.reddit);
+         
+        shareButtonClick(event, url);
       });
     });
-    const observerParameters = { childList: true, subtree: true, };
-    let appBody = document.querySelector('.content[role="main"]');
-    if (!appBody) {
-      appBody = document.body;
-    }
-    observer.observe(appBody, observerParameters);
+    observer.observe(appBody, { childList: true, subtree: true, });
   }
 }
 
 /**
- * Recursively attaches mutation observers to the given element and its children.
- * Observes for specific key elements (such as the share buttons or post-sharing containers),
- * and disconnects when the button is found.
- * @param element - The element to attach observers to.
- * @param preferences - The user's preferences for the share button behavior.
+ * Retrieves the main application body element for observing mutations on Reddit.
+ * If the specific content element is not found, it defaults to the entire document body.
+ * @returns The main content element or the document body.
  */
-function attachRecursiveObservers(element: Element, preferences: UserPreferences): void {
-  if (!isElement(element)) {
-    return;
+export function getAppBody(): Element {
+  let appBody = document.body.querySelector('.content[role="main"]');
+  if (!appBody) {
+    appBody = document.body;
   }
+  return appBody;
+}
 
-  if (element.classList.contains('post-sharing-option-embed')) {
-    addShareButton(element, 'right', preferences);
-    return;
-  }
-
-  const nestedObserver = new MutationObserver((nestedMutationsList: MutationRecord[]) => {
-    nestedMutationsList.forEach((nestedMutation: MutationRecord) => {
-      nestedMutation.addedNodes.forEach((nestedElement: Node) => {
-        if (isElement(nestedElement)) {
-          attachRecursiveObservers(nestedElement, preferences);
-        }
+/**
+ * Creates a mutation observer that listens for the embed button
+ * and attaches a share button next to the embed button on old Reddit.
+ * @param onShareButtonFind - Event Listener for finding the embed button
+ * @returns The configured mutation observer that attaches share buttons.
+ */
+export function createEmbedButtonObserver(onShareButtonFind: (embedButton: HTMLDivElement) => void) {
+  return new MutationObserver((mutationsList: MutationRecord[]) => {
+    mutationsList.forEach((mutation: MutationRecord) => {
+      mutation.addedNodes.forEach(element => {
+        if (!isElement(element)) return;
+        const embedButtons = element.getElementsByClassName('post-sharing-option-embed');
+        if (embedButtons.length === 0) return;
+        const embedButton = embedButtons[0] as HTMLDivElement;
+        onShareButtonFind(embedButton);
       });
     });
   });
-
-  nestedObserver.observe(element, {
-    childList: true,
-    subtree: true,
-  });
-
-  const children = element.children;
-  for (let i = 0; i < children.length; i++) {
-    attachRecursiveObservers(children[i], preferences);
-  }
 }
 
 /**
  * Adds the share button relative to its sibling. This is used in the old Reddit format.
  * @param siblingElement - The sibling element to add the share button next to.
  * @param position - The position to add the share button ('right' or 'left').
- * @param preferences - The user's preferences for the share button behavior.
+ * @param buttonClickListener - The event listener to add to the button's onClick event
  */
-function addShareButton(siblingElement: Element, position: 'right' | 'left', preferences: UserPreferences): void {
-  const htmlString = '<div class="bsb-c-tooltip" role="tooltip">' +
+export function addShareButton(siblingElement: Element, position: 'right' | 'left', 
+  buttonClickListener: (event: MouseEvent) => void): void {
+  const htmlString = 
+      '<div class="bsb-c-tooltip" role="tooltip">' +
         '<div class="bsb-tooltip-arrow bottom"></div>' +
-        '<div class="bsb-tooltip-inner">Better Embed Link</div></div>';
+        '<div class="bsb-tooltip-inner">Better Embed Link</div>' +
+      '</div>';
   const shareButtonDiv = document.createElement('div');
   shareButtonDiv.innerHTML = htmlString;
   shareButtonDiv.className = 'bsb-post-sharing-option';
-  shareButtonDiv.addEventListener('click', event => {
-    shareButtonClick(event, preferences);
-  });
+  shareButtonDiv.addEventListener('click', buttonClickListener);
   if (position === 'right') {
     siblingElement.insertAdjacentElement('afterend', shareButtonDiv);
   } else if (position === 'left') {
-    siblingElement.parentElement?.insertBefore(shareButtonDiv, siblingElement.firstChild);
+    siblingElement.insertAdjacentElement('beforebegin', shareButtonDiv);
   }
 }
 
@@ -189,13 +173,10 @@ export function convertToShareableURL(url: string, preference: RedditPreference)
  * Converts the current post URL to a shareable URL based on the user's preferences,
  * copies the URL to the clipboard, and displays a toast notification anchored to the button element.
  * @param event - The mouse event triggering the click
- * @param preferences - The user's preferences for converting and sharing the URL, including specific platform settings.
+ * @param url - the URL to write to the clipboard
  */
-function shareButtonClick(event: MouseEvent, preferences: UserPreferences): void {
+export async function shareButtonClick(event: MouseEvent, url: string): Promise<void> {
   const { clientX: x, clientY: y, } = event;
-  let url = getPostURL();
-  url = convertToShareableURL(url, preferences.reddit);
-  navigator.clipboard.writeText(url).then(() => {
-    clipboardToast(x, y);
-  });
+  await navigator.clipboard.writeText(url);
+  clipboardToast(x, y);
 }
