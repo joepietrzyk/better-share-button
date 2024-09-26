@@ -85,7 +85,7 @@ export function getLinkFromArticle(article: HTMLElement): string {
   // if we're currently viewing a tweet instead of the feed, it won't have the href link
   if (links.length > 0) {
     link = links[0].getAttribute('href') || link;
-    link = window.location.hostname + link;
+    link = 'https://' + window.location.hostname + link;
   } else {
     link = window.location.href;
   }
