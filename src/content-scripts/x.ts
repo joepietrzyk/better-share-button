@@ -16,17 +16,29 @@ if (isBrowser()) {
  * @param preferences - The user's preferences for share button behavior.
  */
 function main(preferences: UserPreferences) {
-  const observer = createTweetObserver(preferences);
+  let link = '';
+  const observer = createTweetObserver((article) => {
+    handleTweet(article, () => {
+      link = getLinkFromArticle(article);
+    });
+  }, dropdown => {
+    const topMenuItem = dropdown.children[0];
+    const bsb = createShareButtonByCopying(topMenuItem);
+    attachToDropdown(dropdown, bsb, (event) => {
+      shareButtonClick(event,  link, dropdown, preferences);
+    });
+  });
   observer.observe(document.body, {childList: true, subtree: true,});
 }
 
 /**
  * Creates a MutationObserver that watches for added nodes and detects tweets and dropdowns.
- * @param preferences - The user's preferences for share button behavior.
+ * @param onTweetAdd - callback to be invoked when a tweet is added
+ * @param onDropdownAdd - callback to be invoked when a dropdown is added
  * @returns A MutationObserver that observes the DOM for changes.
  */
-export function createTweetObserver(preferences: UserPreferences): MutationObserver {
-  let link = '';
+export function createTweetObserver(onTweetAdd: (article: Element) => void, 
+  onDropdownAdd: (dropdown: Element) => void): MutationObserver {
   return new MutationObserver(mutationList => {
     mutationList.forEach(mutation => {
       mutation.addedNodes.forEach(node => {
@@ -34,18 +46,12 @@ export function createTweetObserver(preferences: UserPreferences): MutationObser
         // check for each added post
         const article = node.getElementsByTagName('article');
         if (article.length > 0) {
-          handleTweet(article[0], () => {
-            link = getLinkFromArticle(article[0]);
-          });
+          onTweetAdd(article[0]);
           // check for the share menu
         } else {
           const dropdown = getDropdown(node);
           if (dropdown == null) return;
-          const topMenuItem = dropdown.children[0];
-          const bsb = createShareButtonByCopying(topMenuItem);
-          attachToDropdown(dropdown, bsb, (event) => {
-            shareButtonClick(event,  link, dropdown, preferences);
-          });
+          onDropdownAdd(dropdown);
         }
       });
     });
@@ -75,7 +81,7 @@ export async function shareButtonClick(event: MouseEvent, link: string, dropdown
  * @param article - The article element containing the tweet.
  * @returns The extracted link from the article.
  */
-export function getLinkFromArticle(article: HTMLElement): string {
+export function getLinkFromArticle(article: Element): string {
   let link = '';
   const links = [...article.querySelectorAll('a[href][dir="ltr"]'),].filter(link => {
     const href = link.getAttribute('href');
@@ -144,7 +150,7 @@ export function attachToDropdown(dropdown: Element, bsb: Element, onClickHandler
  * @param article - The tweet article element.
  * @param shareButtonClick - The click event handler for the share button.
  */
-function handleTweet(article: HTMLElement, shareButtonClick: (event: Event) => void) {
+function handleTweet(article: Element, shareButtonClick: (event: Event) => void) {
   const svgs = article.getElementsByTagName('svg');
   if (svgs.length === 0) return;
   // the share button svg will be the last svg added to the article
@@ -181,4 +187,3 @@ export function convertXLink(link: string, preference: XPreference): string {
   
   return url;
 }
- 
