@@ -20,3 +20,14 @@ export function resolveOnNextFrame(): Promise<void> {
     }, 0);
   });
 }
+
+/**
+ * stubs the clipboard with a blank function
+ */
+export function stubClipboard() {
+  vi.stubGlobal('navigator', {
+    clipboard: {
+      writeText: vi.fn(),
+    },
+  });
+}

@@ -126,6 +126,7 @@ describe('createEmbedButtonObserver', () => {
     document.body.appendChild(embedButtonParent);
     await resolveOnNextFrame();
     expect(hasFired).toBe(true);
+    observer.disconnect();
   });
 
   it('should include the embed button when it invokes the callback', async () => {
@@ -141,6 +142,7 @@ describe('createEmbedButtonObserver', () => {
     const actualClassList = actualEmbedButton!.classList;
     expect(actualTagName.toLowerCase()).toBe('div');
     expect(actualClassList).toContain('post-sharing-option-embed');
+    observer.disconnect();
   });
 });
   

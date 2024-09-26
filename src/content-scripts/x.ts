@@ -25,10 +25,11 @@ function main(preferences: UserPreferences) {
   }, dropdown => {
     const topMenuItem = dropdown.children[0];
     const bsb = createShareButtonByCopying(topMenuItem);
-    attachToDropdown(dropdown, bsb, event => {
+    (bsb as HTMLDivElement).addEventListener('click', event => {
       const convertedLink = convertXLink(link, preferences.x);
       shareButtonClick(event, convertedLink, dropdown).then();
     });
+    attachToDropdown(dropdown, bsb);
   });
   observer.observe(document.body, {childList: true, subtree: true,});
 }
@@ -81,11 +82,12 @@ export async function shareButtonClick(event: MouseEvent, link: string, dropdown
  * @returns The extracted link from the article.
  */
 export function getLinkFromArticle(article: Element): string {
+  const linkFormat = /\/[a-zA-Z0-9\W]+\/status\/\d+$/;
   let link = '';
-  const links = [...article.querySelectorAll('a[href][dir="ltr"]'),].filter(link => {
-    const href = link.getAttribute('href');
+  const links = [...article.querySelectorAll('a[href][dir="ltr"]'),].filter(a => {
+    const href = a.getAttribute('href');
     // filter on href attributes that contain more than one / and exclude the text 'hashtag'
-    return href && href.split('/').length > 1 && !href.includes('src=hashtag_click');
+    return href && linkFormat.test(href);
   });
   // if we're currently viewing a tweet instead of the feed, it won't have the href link
   if (links.length > 0) {
@@ -115,8 +117,8 @@ export function createShareButtonByCopying(elementToCopy: Element): Element {
   newMenuItem.addEventListener('mouseleave', () => {
     newMenuItem.classList.remove(MENU_HOVER_CLASS);
   });
-  const textNode = newMenuItem.children[1].getElementsByTagName('span')[0];
-  textNode.textContent = 'Better share link';
+  const textNode = newMenuItem.children[1]?.getElementsByTagName('span')[0];
+  if (textNode) textNode.textContent = 'Better share link';
   
   return newMenuItem;
 }
@@ -137,10 +139,8 @@ export function getDropdown(parent: Element): Element | null {
  * Attaches the share button to the dropdown menu.
  * @param dropdown - The dropdown element.
  * @param bsb - The share button element.
- * @param onClickHandler - The click event handler for the share button.
  */
-export function attachToDropdown(dropdown: Element, bsb: Element, onClickHandler: (event: MouseEvent) => void) {
-  (bsb as HTMLDivElement).addEventListener('click', onClickHandler);
+export function attachToDropdown(dropdown: Element, bsb: Element) {
   dropdown.insertBefore(bsb, dropdown.firstChild);
 }
 
