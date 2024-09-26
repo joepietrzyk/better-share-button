@@ -2,9 +2,9 @@ import {loadPreferences, UserPreferences, XPreference} from '../settings';
 import {clipboardToast, isBrowser, isElement} from '../common';
 
 // the CSS class used by dropdown menu items when hovered
-const MENU_HOVER_CLASS = 'r-1cuuowz';
+export const MENU_HOVER_CLASS = 'r-1cuuowz';
 // the attribute used 
-const BSB_SHARE_BUTTON_ATTRIBUTE = 'bsb-share-button';
+export const BSB_SHARE_BUTTON_ATTRIBUTE = 'bsb-share-button';
 
 if (isBrowser()) {
   loadPreferences().then(preferences => main(preferences));
@@ -17,15 +17,17 @@ if (isBrowser()) {
  */
 function main(preferences: UserPreferences) {
   let link = '';
-  const observer = createTweetObserver((article) => {
-    handleTweet(article, () => {
+  const observer = createTweetObserver(article => {
+    const shareButton = findShareButton(article);
+    shareButton?.addEventListener('click', () => {
       link = getLinkFromArticle(article);
     });
   }, dropdown => {
     const topMenuItem = dropdown.children[0];
     const bsb = createShareButtonByCopying(topMenuItem);
     attachToDropdown(dropdown, bsb, (event) => {
-      shareButtonClick(event,  link, dropdown, preferences);
+      const convertedLink = convertXLink(link, preferences.x);
+      shareButtonClick(event, convertedLink, dropdown).then();
     });
   });
   observer.observe(document.body, {childList: true, subtree: true,});
@@ -64,12 +66,9 @@ export function createTweetObserver(onTweetAdd: (article: Element) => void,
  * @param event - The mouse click event.
  * @param link - The link to be shared.
  * @param dropdown - The dropdown element.
- * @param preferences - The user's preferences.
  * @returns A promise that resolves once the share action completes.
  */
-export async function shareButtonClick(event: MouseEvent, link: string, dropdown: Element,
-  preferences: UserPreferences): Promise<void> {
-  link = convertXLink(link, preferences.x);
+export async function shareButtonClick(event: MouseEvent, link: string, dropdown: Element): Promise<void> {
   const dropdownParent = dropdown.closest('[role="menu"]');
   (dropdownParent?.previousElementSibling?.previousElementSibling as HTMLElement | undefined)?.click();
   await navigator.clipboard.writeText(link);
@@ -86,7 +85,7 @@ export function getLinkFromArticle(article: Element): string {
   const links = [...article.querySelectorAll('a[href][dir="ltr"]'),].filter(link => {
     const href = link.getAttribute('href');
     // filter on href attributes that contain more than one / and exclude the text 'hashtag'
-    return href && href.split('/').length > 1 && !href.includes('hashtag');
+    return href && href.split('/').length > 1 && !href.includes('src=hashtag_click');
   });
   // if we're currently viewing a tweet instead of the feed, it won't have the href link
   if (links.length > 0) {
@@ -146,18 +145,16 @@ export function attachToDropdown(dropdown: Element, bsb: Element, onClickHandler
 }
 
 /**
- * Attaches a click event handler to the tweet's share button.
+ * Finds the tweet's share button if it exists
  * @param article - The tweet article element.
- * @param shareButtonClick - The click event handler for the share button.
+ * @returns The share button if it exists
  */
-function handleTweet(article: Element, shareButtonClick: (event: Event) => void) {
+export function findShareButton(article: Element): Element | null {
   const svgs = article.getElementsByTagName('svg');
-  if (svgs.length === 0) return;
+  if (svgs.length === 0) return null;
   // the share button svg will be the last svg added to the article
   const shareSvg = svgs[svgs.length - 1];
-  const shareButton = shareSvg.closest('button') as Element | undefined;
-  if (!shareButton) return;
-  shareButton.addEventListener('click', shareButtonClick);
+  return shareSvg.closest('button') as Element || null;
 }
 
 /**
