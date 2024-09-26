@@ -1,7 +1,7 @@
 ﻿import {
   BSB_SHARE_BUTTON_ATTRIBUTE,
   createShareButtonByCopying,
-  createTweetObserver,
+  createTweetObserver, getDropdown,
   getLinkFromArticle,
   MENU_HOVER_CLASS,
   shareButtonClick
@@ -183,12 +183,27 @@ describe('createShareButtonByCopying', () => {
 });
 
 describe('getDropdown', () => {
+  const dropdownPath = path.resolve(__dirname, './__test__/dropdown.html');
+  const dropdownHTML = fs.readFileSync(dropdownPath, 'utf8');
+  beforeEach(() => {
+    document.body.innerHTML = dropdownHTML;
+  });
+  
   it('should find the dropdown when present', () => {
-    
+    const dropdown = getDropdown(document.body);
+    expect(dropdown).not.toBeNull();
+    expect(dropdown!.tagName.toLowerCase()).toBe('div');
+    const actualDataTestid = dropdown!.getAttribute('data-testid');
+    expect(actualDataTestid).toBeTruthy();
+    expect(actualDataTestid!.toLowerCase()).toBe('dropdown');
   });
 
   it('should ignore dropdowns with our custom attribute added', () => {
+    const oldDropdownItem = document.body.querySelector('#dropdown')!.children[0]!;
+    oldDropdownItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE,'true');
     
+    const actual = getDropdown(document.body);
+    expect(actual).toBeNull();
   });
 });
 
