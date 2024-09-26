@@ -3,12 +3,8 @@ import {clipboardToast, isBrowser, isElement} from '../common';
 
 // the CSS class used by dropdown menu items when hovered
 const MENU_HOVER_CLASS = 'r-1cuuowz';
-// the query selector used to find a post's link 
-const POST_LINK_QUERY_SELECTOR = 'a[href][dir="ltr"]';
 // the attribute used 
 const BSB_SHARE_BUTTON_ATTRIBUTE = 'bsb-share-button';
-// the query selector to find the dropdown menu
-const DROPDOWN_QUERY_SELECTOR = 'div[data-testid="Dropdown"]';
 
 if (isBrowser()) {
   loadPreferences().then(preferences => main(preferences));
@@ -20,72 +16,142 @@ if (isBrowser()) {
  * @param preferences - The user's preferences for share button behavior.
  */
 function main(preferences: UserPreferences) {
-  let href: string;
+  const observer = createTweetObserver(preferences);
+  observer.observe(document.body, {childList: true, subtree: true,});
+}
 
-  const observer = new MutationObserver(mutationList => {
+/**
+ * Creates a MutationObserver that watches for added nodes and detects tweets and dropdowns.
+ * @param preferences - The user's preferences for share button behavior.
+ * @returns A MutationObserver that observes the DOM for changes.
+ */
+export function createTweetObserver(preferences: UserPreferences): MutationObserver {
+  let link = '';
+  return new MutationObserver(mutationList => {
     mutationList.forEach(mutation => {
       mutation.addedNodes.forEach(node => {
         if (!isElement(node)) return;
         // check for each added post
         const article = node.getElementsByTagName('article');
         if (article.length > 0) {
-          const svgs = article[0].getElementsByTagName('svg');
-          if (svgs.length === 0) return;
-          // the share button svg will be the last svg added to the article
-          const shareSvg = svgs[svgs.length - 1];
-          const shareButton = shareSvg.closest('button') as Element | undefined;
-          if (!shareButton) return;
-          shareButton.addEventListener('click', () => {
-            const links = [...article[0].querySelectorAll(POST_LINK_QUERY_SELECTOR),].filter(link => {
-              const href = link.getAttribute('href');
-              return href && href.split('/').length > 1 && !href.includes('hashtag');
-            });
-            
-            // if we're currently viewing a tweet instead of the feed, it won't have the href link
-            if (links.length > 0) {
-              href = links[0].getAttribute('href') || href;
-            } else {
-              href = window.location.href;
-              href = href.replace('https://', '').replace('https://', '').replace('x.com', '')
-                .replace('twitter.com','');
-            }
+          handleTweet(article[0], () => {
+            link = getLinkFromArticle(article[0]);
           });
           // check for the share menu
         } else {
-          const dropdown = node.querySelector(DROPDOWN_QUERY_SELECTOR);
-          if (!dropdown) return;
-          if (dropdown.querySelectorAll(`[${BSB_SHARE_BUTTON_ATTRIBUTE}]`).length !== 0) return;
-          // grab the html of the existing Share button, as it'll be copied for our own share button
-          const menuOptionHTML = dropdown.children[0].outerHTML;
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = menuOptionHTML;
-          const newMenuItem = tempDiv.children[0];
-          newMenuItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE, 'true');
-          newMenuItem.addEventListener('mouseenter', () => {
-            newMenuItem.classList.add(MENU_HOVER_CLASS);
+          const dropdown = getDropdown(node);
+          if (dropdown == null) return;
+          const topMenuItem = dropdown.children[0];
+          const bsb = createShareButtonByCopying(topMenuItem);
+          attachToDropdown(dropdown, bsb, (event) => {
+            shareButtonClick(event,  link, dropdown, preferences);
           });
-          newMenuItem.addEventListener('mouseleave', () => {
-            newMenuItem.classList.remove(MENU_HOVER_CLASS);
-          });
-          const textNode = newMenuItem.children[1].getElementsByTagName('span')[0];
-          textNode.textContent = 'Better share link';
-          (newMenuItem as HTMLDivElement).addEventListener('click', event => {
-            let url = 'https://' + window.location.hostname + href;
-            url = convertXLink(url, preferences.x);
-            const dropdownParent = dropdown.closest('[role="menu"]');
-            (dropdownParent?.previousElementSibling?.previousElementSibling as HTMLElement | undefined)?.click();
-            navigator.clipboard.writeText(url).then(() => {
-              clipboardToast(event.clientX, event.clientY);
-            });
-          });
-          dropdown.insertBefore(newMenuItem, dropdown.firstChild);
         }
       });
     });
   });
+}
 
-  observer.observe(document.body, {childList: true, subtree: true,});
+/**
+ * Handles the click event of the share button, copies the modified link to the clipboard,
+ * and displays a toast notification.
+ * @param event - The mouse click event.
+ * @param link - The link to be shared.
+ * @param dropdown - The dropdown element.
+ * @param preferences - The user's preferences.
+ * @returns A promise that resolves once the share action completes.
+ */
+export async function shareButtonClick(event: MouseEvent, link: string, dropdown: Element,
+  preferences: UserPreferences): Promise<void> {
+  link = convertXLink(link, preferences.x);
+  const dropdownParent = dropdown.closest('[role="menu"]');
+  (dropdownParent?.previousElementSibling?.previousElementSibling as HTMLElement | undefined)?.click();
+  await navigator.clipboard.writeText(link);
+  clipboardToast(event.clientX, event.clientY);
+}
 
+/**
+ * Extracts the link from a tweet article element.
+ * @param article - The article element containing the tweet.
+ * @returns The extracted link from the article.
+ */
+export function getLinkFromArticle(article: HTMLElement): string {
+  let link = '';
+  const links = [...article.querySelectorAll('a[href][dir="ltr"]'),].filter(link => {
+    const href = link.getAttribute('href');
+    // filter on href attributes that contain more than one / and exclude the text 'hashtag'
+    return href && href.split('/').length > 1 && !href.includes('hashtag');
+  });
+  // if we're currently viewing a tweet instead of the feed, it won't have the href link
+  if (links.length > 0) {
+    link = links[0].getAttribute('href') || link;
+    link = window.location.hostname + link;
+  } else {
+    link = window.location.href;
+  }
+  
+  return link;
+}
+
+/**
+ * Creates a new share button by copying an existing element.
+ * @param elementToCopy - The element to copy.
+ * @returns A new share button element.
+ */
+export function createShareButtonByCopying(elementToCopy: Element): Element {
+  const menuOptionHTML = elementToCopy.outerHTML;
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = menuOptionHTML;
+  const newMenuItem = tempDiv.children[0];
+  newMenuItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE, 'true');
+  newMenuItem.addEventListener('mouseenter', () => {
+    newMenuItem.classList.add(MENU_HOVER_CLASS);
+  });
+  newMenuItem.addEventListener('mouseleave', () => {
+    newMenuItem.classList.remove(MENU_HOVER_CLASS);
+  });
+  const textNode = newMenuItem.children[1].getElementsByTagName('span')[0];
+  textNode.textContent = 'Better share link';
+  
+  return newMenuItem;
+}
+
+/**
+ * Gets the dropdown menu element from the parent.
+ * @param parent - The parent element.
+ * @returns The dropdown element or null if not found.
+ */
+export function getDropdown(parent: Element): Element | null {
+  const dropdown = parent.querySelector('div[data-testid="Dropdown"]');
+  if (!dropdown) return null;
+  if (dropdown.querySelectorAll(`[${BSB_SHARE_BUTTON_ATTRIBUTE}]`).length !== 0) return null;
+  return dropdown;
+}
+
+/**
+ * Attaches the share button to the dropdown menu.
+ * @param dropdown - The dropdown element.
+ * @param bsb - The share button element.
+ * @param onClickHandler - The click event handler for the share button.
+ */
+export function attachToDropdown(dropdown: Element, bsb: Element, onClickHandler: (event: MouseEvent) => void) {
+  (bsb as HTMLDivElement).addEventListener('click', onClickHandler);
+  dropdown.insertBefore(bsb, dropdown.firstChild);
+}
+
+/**
+ * Attaches a click event handler to the tweet's share button.
+ * @param article - The tweet article element.
+ * @param shareButtonClick - The click event handler for the share button.
+ */
+function handleTweet(article: HTMLElement, shareButtonClick: (event: Event) => void) {
+  const svgs = article.getElementsByTagName('svg');
+  if (svgs.length === 0) return;
+  // the share button svg will be the last svg added to the article
+  const shareSvg = svgs[svgs.length - 1];
+  const shareButton = shareSvg.closest('button') as Element | undefined;
+  if (!shareButton) return;
+  shareButton.addEventListener('click', shareButtonClick);
 }
 
 /**
