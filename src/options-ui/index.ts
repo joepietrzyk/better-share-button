@@ -11,8 +11,7 @@ if (isBrowser()) {
  * It listens for changes in the preferences and saves them.
  * @param preferences - The user's preferences loaded from storage.
  */
-function main(preferences: UserPreferences)
-{
+function main(preferences: UserPreferences) {
   for (const preferenceKey of Object.keys(preferences) as (keyof UserPreferences)[]) {
     const selectorEl = document.body.querySelector(`#${preferenceKey}`) as HTMLSelectElement | null;
     if (!selectorEl) continue;

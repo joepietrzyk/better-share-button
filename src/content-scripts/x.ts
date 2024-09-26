@@ -19,8 +19,7 @@ if (isBrowser()) {
  * Sets up a MutationObserver on the main element to detect when the DOM is ready.
  * @param preferences - The user's preferences for share button behavior.
  */
-function main(preferences: UserPreferences)
-{
+function main(preferences: UserPreferences) {
   let href: string;
 
   const observer = new MutationObserver(mutationList => {
@@ -62,8 +61,12 @@ function main(preferences: UserPreferences)
           tempDiv.innerHTML = menuOptionHTML;
           const newMenuItem = tempDiv.children[0];
           newMenuItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE, 'true');
-          newMenuItem.addEventListener('mouseenter', () => {newMenuItem.classList.add(MENU_HOVER_CLASS);});
-          newMenuItem.addEventListener('mouseleave', () => {newMenuItem.classList.remove(MENU_HOVER_CLASS);});
+          newMenuItem.addEventListener('mouseenter', () => {
+            newMenuItem.classList.add(MENU_HOVER_CLASS);
+          });
+          newMenuItem.addEventListener('mouseleave', () => {
+            newMenuItem.classList.remove(MENU_HOVER_CLASS);
+          });
           const textNode = newMenuItem.children[1].getElementsByTagName('span')[0];
           textNode.textContent = 'Better share link';
           (newMenuItem as HTMLDivElement).addEventListener('click', event => {
@@ -91,8 +94,7 @@ function main(preferences: UserPreferences)
  * @param preference - The user's X preference for how to modify the link.
  * @returns The modified X link.
  */
-export function convertXLink(link: string, preference: XPreference): string
-{
+export function convertXLink(link: string, preference: XPreference): string {
   let url = link.replace('twitter.com', 'x.com');
   switch (preference) {
   case 'fixupx':

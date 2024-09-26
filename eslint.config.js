@@ -19,6 +19,7 @@ export default [
       'eol-last': ['error', 'always',],
       'quotes': ['error', 'single',],
       'comma-dangle': ['error', { arrays: 'always', objects: 'always',},],
+      'brace-style': ['error', '1tbs',],
     },
   },
   {

@@ -66,7 +66,7 @@ function main(preferences: UserPreferences): void {
         let url = getPostURL();
         url = convertToShareableURL(url, preferences.reddit);
          
-        shareButtonClick(event, url);
+        shareButtonClick(event, url).then();
       });
     });
     observer.observe(appBody, { childList: true, subtree: true, });
