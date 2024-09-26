@@ -62,7 +62,7 @@ function main(preferences: UserPreferences): void {
   if (isOldReddit) {
     const appBody = getAppBody();
     const observer = createEmbedButtonObserver(embedButton => {
-      addShareButton(embedButton, 'right', (event) => {
+      addShareButton(embedButton, 'right', event => {
         let url = getPostURL();
         url = convertToShareableURL(url, preferences.reddit);
          

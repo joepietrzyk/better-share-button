@@ -13,6 +13,7 @@ export default [
   jsdoc.configs['flat/recommended-typescript-error'],
   {
     rules: {
+      'arrow-parens': ['error', 'as-needed',],
       'indent': ['error', 2,],
       'max-len': ['error', 120,],
       'semi': ['error', 'always',],

@@ -25,7 +25,7 @@ function main(preferences: UserPreferences) {
   }, dropdown => {
     const topMenuItem = dropdown.children[0];
     const bsb = createShareButtonByCopying(topMenuItem);
-    attachToDropdown(dropdown, bsb, (event) => {
+    attachToDropdown(dropdown, bsb, event => {
       const convertedLink = convertXLink(link, preferences.x);
       shareButtonClick(event, convertedLink, dropdown).then();
     });
