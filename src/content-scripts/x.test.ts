@@ -1,7 +1,8 @@
 ﻿import {
-  BSB_SHARE_BUTTON_ATTRIBUTE,
+  attachToDropdown,
+  BSB_SHARE_BUTTON_ATTRIBUTE, convertXLink,
   createShareButtonByCopying,
-  createTweetObserver, getDropdown,
+  createTweetObserver, findShareButton, getDropdown,
   getLinkFromArticle,
   MENU_HOVER_CLASS,
   shareButtonClick
@@ -9,6 +10,9 @@
 import {resolveOnNextFrame, stubClipboard} from '../test-helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+
+const dropdownPath = path.resolve(__dirname, './__test__/dropdown.html');
+const dropdownHTML = fs.readFileSync(dropdownPath, 'utf8');
 
 describe('createTweetObserver', () => {
   beforeEach(() => {
@@ -48,10 +52,8 @@ describe('createTweetObserver', () => {
 });
 
 describe('shareButtonClick', () => {
-  const pathName = path.resolve(__dirname, './__test__/dropdown.html');
-  const shareButtonHTML = fs.readFileSync(pathName, 'utf8');
   beforeEach(() => {
-    document.documentElement.innerHTML = shareButtonHTML;
+    document.documentElement.innerHTML = dropdownHTML;
   });
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -183,8 +185,6 @@ describe('createShareButtonByCopying', () => {
 });
 
 describe('getDropdown', () => {
-  const dropdownPath = path.resolve(__dirname, './__test__/dropdown.html');
-  const dropdownHTML = fs.readFileSync(dropdownPath, 'utf8');
   beforeEach(() => {
     document.body.innerHTML = dropdownHTML;
   });
@@ -208,43 +208,87 @@ describe('getDropdown', () => {
 });
 
 describe('attachToDropdown', () => {
-  it('should attach the button to the top of the dropdown', () => {
-    
+  beforeEach(() => {
+    document.body.innerHTML = dropdownHTML;
   });
-
-  it('should ', () => {
-    
+  
+  it('should attach the button to the top of the dropdown', () => {
+    const button = document.createElement('div');
+    button.id = 'my-button';
+    const dropdown = document.body.querySelector('#dropdown')!;
+    attachToDropdown(dropdown, button);
+    const actualSibling = button.nextElementSibling;
+    expect(actualSibling).not.toBeNull();
+    expect(actualSibling!.id.toLowerCase()).toBe('first-item');
   });
 });
 
 describe('findShareButton', () => {
-  it('should locate a tweet\'s share button via its SVG', () => {
-        
+  it('should locate a tweet\'s share button via its SVG and return the parent button', () => {
+    const html = 
+            '<article>' +
+            '<button id="correct-button">' +
+            '<svg></svg>' +
+            '</button>' +
+            '</article>';
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    
+    const actualButton = findShareButton(div.children[0]);
+    expect(actualButton).not.toBeNull();
+    expect(actualButton!.id).toBe('correct-button');
   });
 
   it('should not locate any button except the share button', () => {
-        
+    const html = 
+        '<article>' +
+        '<button id="wrong-button">' +
+        '<svg></svg>' +
+        '</button>' +
+        '<button id="wrong-button-2">' +
+        '<svg></svg>\' +\n' +
+        '</button>' +
+        '<button id="correct-button">' +
+        '<svg></svg>' +
+        '</button>';
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    const actualButton = findShareButton(div.children[0]);
+    expect(actualButton).not.toBeNull();
+    expect(actualButton!.id).toBe('correct-button');
   });
 });
 
 describe('convertXLink', () => {
+  const testHref = '/test/1';
+  const testXInput = 'https://x.com' + testHref;
+  const testTwitterInput = 'https://twitter.com' + testHref;
+  
   it('should handle twitter.com and x.com URLs', () => {
-        
+    const actualXLink = convertXLink(testXInput, 'fixupx');
+    const actualTwitterLink = convertXLink(testTwitterInput, 'fixupx');
+    
+    expect(actualXLink).toBe('https://fixupx.com' + testHref);
+    expect(actualTwitterLink).toBe('https://fixupx.com' + testHref);
   });
 
   it('should use the hostname fixupx.com when the preference is \'fixupx\'', () => {
-        
+    const actualXLink = convertXLink(testXInput, 'fixupx');
+    expect(actualXLink).toBe('https://fixupx.com' + testHref);
   });
   
   it('should use the hostname fxtwitter.com when the preference is \'fxtwitter\'', () => {
-
+    const actualXLink = convertXLink(testXInput, 'fxtwitter');
+    expect(actualXLink).toBe('https://fxtwitter.com' + testHref);
   });
 
   it('should use the hostname twittpr.com when the preference is \'twittpr\'', () => {
-
+    const actualXLink = convertXLink(testXInput, 'twittpr');
+    expect(actualXLink).toBe('https://twittpr.com' + testHref);
   });
 
   it('should use the hostname vxtwitter.com when the preference is \'vxtwitter\'', () => {
-
+    const actualXLink = convertXLink(testXInput, 'vxtwitter');
+    expect(actualXLink).toBe('https://vxtwitter.com' + testHref);
   });
 });

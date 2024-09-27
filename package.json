@@ -9,7 +9,7 @@
     "watch": "webpack --watch --mode development",
     "start:firefox": "web-ext run --source-dir ./dist",
     "lint": "eslint --fix",
-    "build": "webpack --mode production",
+    "build": "webpack --mode production && web-ext build -s ./dist",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
