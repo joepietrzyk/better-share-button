@@ -23,8 +23,7 @@ function main(preferences: UserPreferences) {
       link = getLinkFromArticle(article);
     });
   }, dropdown => {
-    const topMenuItem = dropdown.children[0];
-    const bsb = createShareButtonByCopying(topMenuItem);
+    const bsb = createShareButton();
     (bsb as HTMLDivElement).addEventListener('click', event => {
       const convertedLink = convertXLink(link, preferences.x);
       shareButtonClick(event, convertedLink, dropdown).then();
@@ -101,26 +100,54 @@ export function getLinkFromArticle(article: Element): string {
 }
 
 /**
- * Creates a new share button by copying an existing element.
- * @param elementToCopy - The element to copy.
- * @returns A new share button element.
+ * Creates the Share button. Right now it's just a copy of the existing 'Copy Link' button on twitter.
+ * @returns the Share Button Element with no events added
  */
-export function createShareButtonByCopying(elementToCopy: Element): Element {
-  const menuOptionHTML = elementToCopy.outerHTML;
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = menuOptionHTML;
-  const newMenuItem = tempDiv.children[0];
-  newMenuItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE, 'true');
-  newMenuItem.addEventListener('mouseenter', () => {
-    newMenuItem.classList.add(MENU_HOVER_CLASS);
+export function createShareButton(): Element {
+  const menuItemDiv = document.createElement('div');
+  menuItemDiv.setAttribute('role', 'menuitem');
+  menuItemDiv.setAttribute('tabindex', '0');
+  menuItemDiv.setAttribute('class', 
+    'css-175oi2r r-1loqt21 r-18u37iz r-1mmae3n r-3pj75a r-13qz1uu r-o7ynqc r-6416eg r-1ny4l3l');
+  menuItemDiv.setAttribute('bsb-share-button', 'true');
+  const firstInnerDiv = document.createElement('div');
+  firstInnerDiv.setAttribute('class', 'css-175oi2r r-1777fci r-faml9v');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('class', 'r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1nao33i r-1q142lx');
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  p.setAttribute('d', 'M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 ' +
+      '0 2.73 2.74 2.73 7.17 0 9.9l-1.42 1.42-1.41-1.42 1.41-1.41c1.96-1.96 1.96-5.12 0-7.07zm-2.12 3.53l-7.07 ' +
+      '7.07-1.41-1.41 7.07-7.07 1.41 1.41zm-12.02.71l1.42-1.42 1.41 1.42-1.41 1.41c-1.96 1.96-1.96 5.12 0 7.07 1.95 ' +
+      '1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z');
+  g.appendChild(p);
+  svg.appendChild(g);
+  firstInnerDiv.appendChild(svg);
+  const secondInnerDiv = document.createElement('div');
+  secondInnerDiv.setAttribute('class', 'css-175oi2r r-16y2uox r-1wbh5a2');
+  const innermostDiv = document.createElement('div');
+  innermostDiv.setAttribute('dir', 'ltr');
+  innermostDiv.setAttribute('class', 'css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-b88u0q');
+  innermostDiv.style.textOverflow = 'unset';
+  innermostDiv.style.color = 'rgb(231, 233, 234)';
+  const span = document.createElement('span');
+  span.setAttribute('class', 'css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3');
+  span.style.textOverflow = 'unset';
+  span.textContent = 'Better share link';
+  innermostDiv.appendChild(span);
+  secondInnerDiv.appendChild(innermostDiv);
+  menuItemDiv.appendChild(firstInnerDiv);
+  menuItemDiv.appendChild(secondInnerDiv);
+  menuItemDiv.addEventListener('mouseenter', () => {
+    menuItemDiv.classList.add(MENU_HOVER_CLASS);
   });
-  newMenuItem.addEventListener('mouseleave', () => {
-    newMenuItem.classList.remove(MENU_HOVER_CLASS);
+  menuItemDiv.addEventListener('mouseleave', () => {
+    menuItemDiv.classList.remove(MENU_HOVER_CLASS);
   });
-  const textNode = newMenuItem.children[1]?.getElementsByTagName('span')[0];
-  if (textNode) textNode.textContent = 'Better share link';
   
-  return newMenuItem;
+  return menuItemDiv;
 }
 
 /**

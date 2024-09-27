@@ -1,7 +1,6 @@
 ﻿import {
   attachToDropdown,
-  BSB_SHARE_BUTTON_ATTRIBUTE, convertXLink,
-  createShareButtonByCopying,
+  BSB_SHARE_BUTTON_ATTRIBUTE, convertXLink, createShareButton,
   createTweetObserver, findShareButton, getDropdown,
   getLinkFromArticle,
   MENU_HOVER_CLASS,
@@ -128,59 +127,41 @@ describe('getLinkFromArticle', () => {
   });
 });
 
-describe('createShareButtonByCopying', () => {
-  it('should copy the elementToCopy and all of its children', () => {
-    const div = document.createElement('div');
-    div.innerHTML = '<div id="parent"><div id="child-node"><div id="deep-node"></div></div></div>';
-    const actualCopy = createShareButtonByCopying(div.children[0]);
-    const actualDeepNode = actualCopy.querySelector('#deep-node');
-    expect(actualDeepNode).not.toBe(null);
+describe('createShareButton', () => {
+  it('should create a button with role="menuitem"', () => {
+    const button = createShareButton();
+    expect(button.getAttribute('role')).toBeTruthy();
+    expect(button.getAttribute('role')).toBe('menuitem');
   });
-
+  
   it('should add the hover style to the button when hovered and remove when the mouse moves away', () => {
-    const div = document.createElement('div');
-    const actualCopy = createShareButtonByCopying(div);
+    const button = createShareButton();
     const mouseenter = new MouseEvent('mouseenter', {
       bubbles: true,
       cancelable: true,
     });
-    actualCopy.dispatchEvent(mouseenter);
-    expect(actualCopy.classList).toContain(MENU_HOVER_CLASS);
-    
+    button.dispatchEvent(mouseenter);
+    expect(button.classList).toContain(MENU_HOVER_CLASS);
+
     const mouseleave = new MouseEvent('mouseleave', {
       bubbles: true,
       cancelable: true,
     });
-    actualCopy.dispatchEvent(mouseleave);
-    expect(actualCopy.classList).not.toContain(MENU_HOVER_CLASS);
+    button.dispatchEvent(mouseleave);
+    expect(button.classList).not.toContain(MENU_HOVER_CLASS);
   });
 
-  it('should change the text on the button to \'Better share link\'', () => {
-    const div = document.createElement('div');
-    div.innerHTML = 
-        '<div role="menuitem" tabindex="0" ' +
-        'class="css-175oi2r r-1loqt21 r-18u37iz r-1mmae3n r-3pj75a r-13qz1uu r-o7ynqc r-6416eg r-1ny4l3l">\n' +
-        '                <div class="css-175oi2r r-1777fci r-faml9v">\n' +
-        '                </div>\n' +
-        '                <div class="css-175oi2r r-16y2uox r-1wbh5a2"><div dir="ltr" ' +
-        'class="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-b88u0q" ' +
-        'style="text-overflow: unset; color: rgb(231, 233, 234);">\n' +
-        '                    <span class="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3" ' +
-        'style="text-overflow: unset;">Copy link</span>\n' +
-        '                </div>\n' +
-        '                </div>\n' +
-        '            </div>';
-    const copyLink = div.children[0]!;
-    const actualCopy = createShareButtonByCopying(copyLink);
-    const textEl = actualCopy.getElementsByTagName('span')[0]!;
-    expect(textEl.textContent).toBe('Better share link');
+  it('should include the icon svg', () => {
+    const button = createShareButton();
+    const svg = button.querySelector('svg');
+    expect(svg).not.toBeNull();
   });
 
-  it('should add a unique attribute to the button so we can ensure it\'s only added once', () => {
-    const div = document.createElement('div');
-    div.innerHTML = '<div></div>';
-    const actualCopy = createShareButtonByCopying(div.children[0]);
-    expect(actualCopy.getAttribute(BSB_SHARE_BUTTON_ATTRIBUTE)).toBeTruthy();
+  it('should contain the text \'Better share link\'', () => {
+    const button = createShareButton();
+    const textSpan = button.querySelector('span');
+    expect(textSpan).not.toBeNull();
+    expect(textSpan!.textContent).toBe('Better share link');
   });
 });
 

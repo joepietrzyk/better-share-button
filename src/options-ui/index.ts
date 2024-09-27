@@ -1,4 +1,4 @@
-﻿import {loadPreferences, savePreferences, UserPreferences} from '../settings';
+﻿import {loadPreferences, RedditPreference, savePreferences, UserPreferences, XPreference} from '../settings';
 import {isBrowser} from '../common';
 import './options.css';
 
@@ -12,19 +12,21 @@ if (isBrowser()) {
  * @param preferences - The user's preferences loaded from storage.
  */
 function main(preferences: UserPreferences) {
-  for (const preferenceKey of Object.keys(preferences) as (keyof UserPreferences)[]) {
-    const selectorEl = document.body.querySelector(`#${preferenceKey}`) as HTMLSelectElement | null;
-    if (!selectorEl) continue;
-
-    // Set the select value based on the loaded preferences.
-    selectorEl.value = preferences[preferenceKey] as string;
-
-    // Add event listener to save the updated preference when changed.
-    selectorEl.addEventListener('change', async () => {
-      preferences[preferenceKey] = selectorEl.value as never; // Safely update the preference.
+  const redditEl = document.body.querySelector('#reddit');
+  if (redditEl && redditEl instanceof HTMLSelectElement) {
+    redditEl.addEventListener('change', async () => {
+      preferences.reddit = redditEl.value as RedditPreference;
       await savePreferences();
     });
   }
+  const xEl = document.body.querySelector('#x');
+  if (xEl && xEl instanceof HTMLSelectElement) {
+    xEl.addEventListener('change', async () => {
+      preferences.x = xEl.value as XPreference;
+      await savePreferences();
+    });
+  }
+  
   document.body.querySelector('#loading')?.classList.add('hidden');
   document.body.querySelector('#settings')?.classList.remove('hidden');
 }
