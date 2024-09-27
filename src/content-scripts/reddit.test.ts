@@ -10,6 +10,7 @@ import {JSDOM} from 'jsdom';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as common from '../common';
+import {resolveOnNextFrame, setHTMLStringAsDocument} from '../test-helpers';
 
 function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
   vi.stubGlobal('location', {
@@ -18,21 +19,6 @@ function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
     host: `${newOrOld}reddit.com`,
     hostname: `${newOrOld}reddit.com`,
     pathname: pathname,
-  });
-}
-
-function setHTMLStringAsDocument(htmlString: string) {
-  const dom = new JSDOM(htmlString);
-  vi.stubGlobal('window', dom.window);
-  vi.stubGlobal('document', dom.window.document);
-}
-
-function resolveOnNextFrame(callback: () => void): Promise<void> {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      callback();
-      resolve();
-    }, 0);
   });
 }
 
@@ -70,8 +56,8 @@ describe('isNewOrOldReddit', () => {
 
   it('should treat all non-new reddit html as old reddit', () => {
     mockRedditURL();
-    const htmlContent = '<div>This is reddit!</div>';
-    const dom = new JSDOM(htmlContent);
+    const htmlString = '<div>This is reddit!</div>';
+    const dom = new JSDOM(htmlString);
     vi.stubGlobal('window', dom.window);
     vi.stubGlobal('document', dom.window.document);
 
@@ -129,7 +115,7 @@ describe('createEmbedButtonObserver', () => {
     expect(observer instanceof MutationObserver).toBe(true);
   });
 
-  it('should invoke the callback when the embed button is added', () => {
+  it('should invoke the callback when the embed button is added', async () => {
     let hasFired = false;
     const observer = createEmbedButtonObserver(() => {
       hasFired = true;
@@ -138,25 +124,25 @@ describe('createEmbedButtonObserver', () => {
     const embedButtonParent = document.createElement('div');
     embedButtonParent.innerHTML = EMBED_BUTTON_HTML;
     document.body.appendChild(embedButtonParent);
-    return resolveOnNextFrame(() => {
-      expect(hasFired).toBe(true);
-    });
+    await resolveOnNextFrame();
+    expect(hasFired).toBe(true);
+    observer.disconnect();
   });
 
-  it('should include the embed button when it invokes the callback', () => {
+  it('should include the embed button when it invokes the callback', async () => {
     let actualEmbedButton: HTMLDivElement | null = null;
     const observer = createEmbedButtonObserver(embedButton => actualEmbedButton = embedButton);
     observer.observe(document.body, {childList: true, subtree: true,});
     const embedButtonParent = document.createElement('div');
     embedButtonParent.innerHTML = EMBED_BUTTON_HTML;
     document.body.appendChild(embedButtonParent);
-    return resolveOnNextFrame(() => {
-      expect(actualEmbedButton).not.toBe(null);
-      const actualTagName = actualEmbedButton!.tagName;
-      const actualClassList = actualEmbedButton!.classList;
-      expect(actualTagName.toLowerCase()).toBe('div');
-      expect(actualClassList).toContain('post-sharing-option-embed');
-    });
+    await resolveOnNextFrame();
+    expect(actualEmbedButton).not.toBe(null);
+    const actualTagName = actualEmbedButton!.tagName;
+    const actualClassList = actualEmbedButton!.classList;
+    expect(actualTagName.toLowerCase()).toBe('div');
+    expect(actualClassList).toContain('post-sharing-option-embed');
+    observer.disconnect();
   });
 });
   
