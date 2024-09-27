@@ -2,6 +2,8 @@
 import eslint from '@eslint/js';
 import teslint from 'typescript-eslint';
 import jsdoc from 'eslint-plugin-jsdoc';
+import security from 'eslint-plugin-security';
+import noUnsanitized from 'eslint-plugin-no-unsanitized';
 import globals from 'globals';
 
 export default [
@@ -9,7 +11,9 @@ export default [
     ignores: ['dist',],
   },
   eslint.configs.recommended,
-  ...teslint.configs.recommended,
+  ...teslint.configs.recommended, 
+  security.configs.recommended,
+  noUnsanitized.configs.recommended,
   jsdoc.configs['flat/recommended-typescript-error'],
   {
     rules: {
@@ -29,6 +33,8 @@ export default [
     rules: {
       'jsdoc/require-jsdoc': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
+      'security/detect-non-literal-fs-filename': 'off',
+      'no-unsanitized/property': 'off',
     },
   },
   {

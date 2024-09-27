@@ -114,14 +114,23 @@ export function createEmbedButtonObserver(onShareButtonFind: (embedButton: HTMLD
  */
 export function addShareButton(siblingElement: Element, position: 'right' | 'left', 
   buttonClickListener: (event: MouseEvent) => void): void {
-  const htmlString = 
-      '<div class="bsb-c-tooltip" role="tooltip">' +
-        '<div class="bsb-tooltip-arrow bottom"></div>' +
-        '<div class="bsb-tooltip-inner">Better Embed Link</div>' +
-      '</div>';
+  // create the button tooltip programmatically
   const shareButtonDiv = document.createElement('div');
-  shareButtonDiv.innerHTML = htmlString;
   shareButtonDiv.className = 'bsb-post-sharing-option';
+  let parent = shareButtonDiv;
+  let el = document.createElement('div');
+  el.classList.add('bsb-c-tooltip');
+  el.setAttribute('role', 'tooltip');
+  parent.appendChild(el);
+  parent = el;
+  el = document.createElement('div');
+  el.classList.add('bsb-tooltip-arrow', 'bottom');
+  parent.appendChild(el);
+  el = document.createElement('div');
+  el.classList.add('bsb-tooltip-inner');
+  el.textContent = 'Better Embed Link';
+  parent.appendChild(el);
+  
   shareButtonDiv.addEventListener('click', buttonClickListener);
   if (position === 'right') {
     siblingElement.insertAdjacentElement('afterend', shareButtonDiv);
