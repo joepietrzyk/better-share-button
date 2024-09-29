@@ -47,7 +47,7 @@ export function isNewOrOldReddit(): RedditVersion {
     }
   }
 
-  return { isNewReddit, isOldReddit, };
+  return { isNewReddit, isOldReddit };
 }
 
 /**
@@ -57,7 +57,7 @@ export function isNewOrOldReddit(): RedditVersion {
  */
 function main(preferences: UserPreferences): void {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { isNewReddit, isOldReddit, } = isNewOrOldReddit();
+  const { isNewReddit, isOldReddit } = isNewOrOldReddit();
 
   if (isOldReddit) {
     const appBody = getAppBody();
@@ -69,7 +69,7 @@ function main(preferences: UserPreferences): void {
         shareButtonClick(event, url).then();
       });
     });
-    observer.observe(appBody, { childList: true, subtree: true, });
+    observer.observe(appBody, { childList: true, subtree: true });
   }
 }
 
@@ -185,7 +185,7 @@ export function convertToShareableURL(url: string, preference: RedditPreference)
  * @param url - the URL to write to the clipboard
  */
 export async function shareButtonClick(event: MouseEvent, url: string): Promise<void> {
-  const { clientX: x, clientY: y, } = event;
+  const { clientX: x, clientY: y } = event;
   await navigator.clipboard.writeText(url);
   clipboardToast(x, y);
 }

@@ -22,7 +22,7 @@ export default (env, argv) => ({
     clean: true,
   },
   resolve: {
-    extensions: ['.ts', '.js',],
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [
@@ -33,7 +33,7 @@ export default (env, argv) => ({
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader',],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
@@ -41,13 +41,13 @@ export default (env, argv) => ({
     new HtmlWebpackPlugin({
       template: './options-ui/index.html',
       filename: 'options.html',
-      chunks: ['options',],
+      chunks: ['options'],
     }),
     new WebpackExtensionManifestPlugin({
       config: {
         base: './manifest.json',
       },
-      pkgJsonProps: ['version', 'description',],
+      pkgJsonProps: ['version', 'description'],
       minify: argv.mode === 'production',
     }),
     // new CopyPlugin({

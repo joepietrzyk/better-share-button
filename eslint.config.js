@@ -8,7 +8,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['dist',],
+    ignores: ['dist'],
   },
   eslint.configs.recommended,
   ...teslint.configs.recommended, 
@@ -17,19 +17,19 @@ export default [
   jsdoc.configs['flat/recommended-typescript-error'],
   {
     rules: {
-      'arrow-parens': ['error', 'as-needed',],
-      'indent': ['error', 2,],
-      'max-len': ['error', 120,],
-      'semi': ['error', 'always',],
-      'eol-last': ['error', 'always',],
-      'quotes': ['error', 'single',],
-      'comma-dangle': ['error', { arrays: 'always', objects: 'always',},],
-      'brace-style': ['error', '1tbs',],
-      'comma-spacing': ['error', { before: false, after: true, },],
+      'arrow-parens': ['error', 'as-needed'],
+      'indent': ['error', 2],
+      'max-len': ['error', 120],
+      'semi': ['error', 'always'],
+      'eol-last': ['error', 'always'],
+      'quotes': ['error', 'single'],
+      'comma-dangle': ['error', { arrays: 'always-multiline', objects: 'always-multiline'}],
+      'brace-style': ['error', '1tbs'],
+      'comma-spacing': ['error', { before: false, after: true }],
     },
   },
   {
-    files: ['**/*.test.ts', '**/*.spec.ts',],
+    files: ['**/*.test.ts', '**/*.spec.ts'],
     rules: {
       'jsdoc/require-jsdoc': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
@@ -38,7 +38,7 @@ export default [
     },
   },
   {
-    files: ['*.js',],
+    files: ['*.js'],
     languageOptions: {
       globals: {
         ...globals.node,

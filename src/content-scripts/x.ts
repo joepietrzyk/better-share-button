@@ -30,7 +30,7 @@ function main(preferences: UserPreferences) {
     });
     attachToDropdown(dropdown, bsb);
   });
-  observer.observe(document.body, {childList: true, subtree: true,});
+  observer.observe(document.body, {childList: true, subtree: true});
 }
 
 /**
@@ -83,7 +83,7 @@ export async function shareButtonClick(event: MouseEvent, link: string, dropdown
 export function getLinkFromArticle(article: Element): string {
   const linkFormat = /\/[a-zA-Z0-9\W]+\/status\/\d+$/;
   let link = '';
-  const links = [...article.querySelectorAll('a[href][dir="ltr"]'),].filter(a => {
+  const links = [...article.querySelectorAll('a[href][dir="ltr"]')].filter(a => {
     const href = a.getAttribute('href');
     // filter on href attributes that contain more than one / and exclude the text 'hashtag'
     return href && linkFormat.test(href);

@@ -120,7 +120,7 @@ describe('createEmbedButtonObserver', () => {
     const observer = createEmbedButtonObserver(() => {
       hasFired = true;
     });
-    observer.observe(document.body, {childList: true, subtree: true,});
+    observer.observe(document.body, {childList: true, subtree: true});
     const embedButtonParent = document.createElement('div');
     embedButtonParent.innerHTML = EMBED_BUTTON_HTML;
     document.body.appendChild(embedButtonParent);
@@ -132,7 +132,7 @@ describe('createEmbedButtonObserver', () => {
   it('should include the embed button when it invokes the callback', async () => {
     let actualEmbedButton: HTMLDivElement | null = null;
     const observer = createEmbedButtonObserver(embedButton => actualEmbedButton = embedButton);
-    observer.observe(document.body, {childList: true, subtree: true,});
+    observer.observe(document.body, {childList: true, subtree: true});
     const embedButtonParent = document.createElement('div');
     embedButtonParent.innerHTML = EMBED_BUTTON_HTML;
     document.body.appendChild(embedButtonParent);
@@ -271,7 +271,7 @@ describe('shareButtonClick', () => {
         writeText: vi.fn(),
       },
     });
-    const mouseEvent = new MouseEvent('click', { clientX: expectedX, clientY: expectedY, });
+    const mouseEvent = new MouseEvent('click', { clientX: expectedX, clientY: expectedY });
     await shareButtonClick(mouseEvent, '');
     expect(spyClipboard).toHaveBeenCalledTimes(1);
     expect(actualX).toBe(expectedX);

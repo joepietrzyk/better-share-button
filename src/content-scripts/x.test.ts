@@ -23,7 +23,7 @@ describe('createTweetObserver', () => {
     const observer = createTweetObserver(article => {
       actualArticle = article;
     }, () => {});
-    observer.observe(document.body, {childList: true, subtree: true,});
+    observer.observe(document.body, {childList: true, subtree: true});
     const div = document.createElement('div');
     div.innerHTML = '<article id="test"></article>';
     document.body.appendChild(div);
@@ -39,7 +39,7 @@ describe('createTweetObserver', () => {
       dropdown => {
         actualDropdown = dropdown;
       });
-    observer.observe(document.body, {childList: true, subtree: true,});
+    observer.observe(document.body, {childList: true, subtree: true});
     const div = document.createElement('div');
     div.innerHTML = '<div data-testid="Dropdown"></div>';
     document.body.appendChild(div);
