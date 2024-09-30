@@ -56,3 +56,17 @@ export function clipboardToast(x: number, y: number): void {
     }
   }
 }
+
+/**
+ * Stubs the clipboard for unit tests
+ */
+export function stubClipboard() {
+  Object.defineProperty(global, 'navigator', {
+    value: {
+      clipboard: {
+        writeText: jest.fn(),
+      },
+    },
+    writable: true,
+  });
+}

@@ -10,9 +10,10 @@
   MENU_HOVER_CLASS,
   shareButtonClick,
 } from './x';
-import { resolveOnNextFrame, stubClipboard } from '../test-helpers';
+import { resolveOnNextFrame } from '../test-helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { stubClipboard } from '../common';
 
 const dropdownPath = path.resolve(__dirname, './__test__/dropdown.html');
 const dropdownHTML = fs.readFileSync(dropdownPath, 'utf8');
@@ -63,9 +64,6 @@ describe('shareButtonClick', () => {
   beforeEach(() => {
     document.documentElement.innerHTML = dropdownHTML;
   });
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
 
   it('should click off the menu to close the dropdown', async () => {
     stubClipboard();
@@ -99,17 +97,16 @@ describe('getLinkFromArticle', () => {
     div.innerHTML = articleHTML;
     document.documentElement.innerHTML = div.outerHTML;
   });
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
 
   it('should get a link that matches the pattern `/user/status/id` from your feed', () => {
-    vi.stubGlobal('location', {
-      href: 'https://x.com',
-      protocol: 'https:',
-      host: 'x.com',
-      hostname: 'x.com',
-      pathname: '',
+    Object.defineProperty(global, 'location', {
+      value: {
+        href: 'https://x.com',
+        protocol: 'https:',
+        host: 'x.com',
+        hostname: 'x.com',
+        pathname: '',
+      },
     });
     const article = document.body.getElementsByTagName('article')[0]!;
     const actualLink = getLinkFromArticle(article);
@@ -117,12 +114,14 @@ describe('getLinkFromArticle', () => {
   });
 
   it("should fall back to the window URL if it's unable to find it in the tweet", () => {
-    vi.stubGlobal('location', {
-      href: expectedLink,
-      protocol: 'https:',
-      host: 'x.com',
-      hostname: 'x.com',
-      pathname: '/test/status/1',
+    Object.defineProperty(global, 'location', {
+      value: {
+        href: expectedLink,
+        protocol: 'https:',
+        host: 'x.com',
+        hostname: 'x.com',
+        pathname: '/test/status/1',
+      },
     });
     const article = document.body.getElementsByTagName('article')[0]!;
     const correctLink = article.querySelector('#correct-link')!;

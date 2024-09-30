@@ -7,77 +7,61 @@ import {
   isNewOrOldReddit,
   shareButtonClick,
 } from './reddit';
-import { JSDOM } from 'jsdom';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as common from '../common';
-import { resolveOnNextFrame, setHTMLStringAsDocument } from '../test-helpers';
+import { resolveOnNextFrame } from '../test-helpers';
 
 function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
-  vi.stubGlobal('location', {
-    href: `https://${newOrOld}reddit.com${pathname}`,
-    protocol: 'https:',
-    host: `${newOrOld}reddit.com`,
-    hostname: `${newOrOld}reddit.com`,
-    pathname: pathname,
+  // Mock the global location object
+  Object.defineProperty(global, 'location', {
+    value: {
+      href: `https://${newOrOld}reddit.com${pathname}`,
+      protocol: 'https:',
+      host: `${newOrOld}reddit.com`,
+      hostname: `${newOrOld}reddit.com`,
+      pathname: pathname,
+    },
+    writable: true, // Make sure the mock can be updated during tests
   });
 }
 
 describe('isNewOrOldReddit', () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it('should recognize the window URL as new.reddit.com', () => {
+  test('should recognize the window URL as new.reddit.com', () => {
     mockRedditURL('new.');
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(true);
     expect(actual.isOldReddit).toBe(false);
   });
 
-  it('should recognize the window URL as old.reddit.com', () => {
+  test('should recognize the window URL as old.reddit.com', () => {
     mockRedditURL('old.');
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(false);
     expect(actual.isOldReddit).toBe(true);
   });
 
-  it('should recognize new reddit html as new reddit', () => {
+  test('should recognize new reddit html as new reddit', () => {
     mockRedditURL();
-    const htmlContent = '<shreddit-app></shreddit-app>';
-    const dom = new JSDOM(htmlContent);
-    vi.stubGlobal('window', dom.window);
-    vi.stubGlobal('document', dom.window.document);
-
+    document.body.innerHTML = '<shreddit-app></shreddit-app>';
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(true);
     expect(actual.isOldReddit).toBe(false);
-    dom.window.close();
   });
 
-  it('should treat all non-new reddit html as old reddit', () => {
+  test('should treat all non-new reddit html as old reddit', () => {
     mockRedditURL();
-    const htmlString = '<div>This is reddit!</div>';
-    const dom = new JSDOM(htmlString);
-    vi.stubGlobal('window', dom.window);
-    vi.stubGlobal('document', dom.window.document);
+    document.body.innerHTML = '<div>This is reddit!</div>';
 
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(false);
     expect(actual.isOldReddit).toBe(true);
-    dom.window.close();
   });
 });
 
 describe('getAppBody', () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it('should find the main body of the reddit app when present', () => {
-    const htmlString = '<body><div class="body"></div><div class="content" role="main"></div></body>';
-    setHTMLStringAsDocument(htmlString);
-
+  test('should find the main body of the reddit app when present', () => {
+    document.body.innerHTML = '<body><div class="body"></div><div class="content" role="main"></div></body>';
     const actualEl = getAppBody();
     const actualRole = actualEl.getAttribute('role');
     const actualClass = actualEl.getAttribute('class');
@@ -85,10 +69,8 @@ describe('getAppBody', () => {
     expect(actualClass).toBe('content');
   });
 
-  it("should fall back to the document body if the app body isn't found", () => {
-    const htmlString = '<body></body>';
-    setHTMLStringAsDocument(htmlString);
-
+  test("should fall back to the document body if the app body isn't found", () => {
+    document.body.innerHTML = '<body></body>';
     const actualEl = getAppBody();
     const actualTagName = actualEl.tagName;
     expect(actualTagName.toLowerCase()).toBe('body');
@@ -104,19 +86,16 @@ describe('createEmbedButtonObserver', () => {
     '</div>' +
     '</div>';
   beforeEach(() => {
-    setHTMLStringAsDocument('<body></body>');
-  });
-  afterEach(() => {
-    vi.unstubAllGlobals();
+    document.body.innerHTML = '<body></body>';
   });
 
-  it('should create a MutationObserver', () => {
+  test('should create a MutationObserver', () => {
     const observer = createEmbedButtonObserver(() => {});
     expect(observer).not.toBeNull();
     expect(observer instanceof MutationObserver).toBe(true);
   });
 
-  it('should invoke the callback when the embed button is added', async () => {
+  test('should invoke the callback when the embed button is added', async () => {
     let hasFired = false;
     const observer = createEmbedButtonObserver(() => {
       hasFired = true;
@@ -130,7 +109,7 @@ describe('createEmbedButtonObserver', () => {
     observer.disconnect();
   });
 
-  it('should include the embed button when it invokes the callback', async () => {
+  test('should include the embed button when it invokes the callback', async () => {
     let actualEmbedButton: HTMLDivElement | null = null;
     const observer = createEmbedButtonObserver(embedButton => (actualEmbedButton = embedButton));
     observer.observe(document.body, { childList: true, subtree: true });
@@ -149,14 +128,10 @@ describe('createEmbedButtonObserver', () => {
 
 describe('addShareButton', () => {
   beforeEach(() => {
-    setHTMLStringAsDocument('<body></body>');
+    document.body.innerHTML = '<body></body>';
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it("should add the share button to the right of the provided element when passed 'right'", () => {
+  test("should add the share button to the right of the provided element when passed 'right'", () => {
     const sibling = document.createElement('div');
     document.body.appendChild(sibling);
     addShareButton(sibling, 'right', () => {});
@@ -168,7 +143,7 @@ describe('addShareButton', () => {
     expect(actualClassList).toContain('bsb-post-sharing-option');
   });
 
-  it("should add the share button to the left of the provided element when passed 'left'", () => {
+  test("should add the share button to the left of the provided element when passed 'left'", () => {
     const sibling = document.createElement('div');
     document.body.appendChild(sibling);
     addShareButton(sibling, 'left', () => {});
@@ -180,7 +155,7 @@ describe('addShareButton', () => {
     expect(actualClassList).toContain('bsb-post-sharing-option');
   });
 
-  it('should invoke the buttonClickListener when clicked', () => {
+  test('should invoke the buttonClickListener when clicked', () => {
     let hasFired = false;
     const sibling = document.createElement('div');
     document.body.appendChild(sibling);
@@ -198,12 +173,12 @@ describe('convertToShareableURL', () => {
     mockRedditURL();
   });
 
-  it('should convert reddit urls to vxreddit when the user chooses vxreddit', () => {
+  test('should convert reddit urls to vxreddit when the user chooses vxreddit', () => {
     const actual = convertToShareableURL(window.location.href, 'vxreddit');
     expect(actual).toEqual('https://vxreddit.com/r/funny');
   });
 
-  it('should convert reddit urls to rxddit when the user chooses rxddit', () => {
+  test('should convert reddit urls to rxddit when the user chooses rxddit', () => {
     const actual = convertToShareableURL(window.location.href, 'rxddit');
     expect(actual).toEqual('https://rxddit.com/r/funny');
   });
@@ -216,26 +191,22 @@ describe('getPostURL', () => {
   const STRIPPED_URL = 'https://reddit.com/r/test/comments/1111111/test/';
 
   beforeEach(() => {
-    setHTMLStringAsDocument(html);
+    document.body.innerHTML = html;
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it('should extract the post URL from the DOM and remove the query strings', () => {
+  test('should extract the post URL from the DOM and remove the query strings', () => {
     const actual = getPostURL();
     expect(actual).toBe(STRIPPED_URL);
   });
 
-  it('should strip old.reddit from the URL', () => {
+  test('should strip old.reddit from the URL', () => {
     const oldRedditURL = TEST_URL.replace('reddit.com', 'old.reddit.com');
     document.body.querySelector('#test-url')!.setAttribute('value', oldRedditURL);
     const actual = getPostURL();
     expect(actual).toBe(STRIPPED_URL);
   });
 
-  it('should strip new.reddit from the URL', () => {
+  test('should strip new.reddit from the URL', () => {
     const newRedditURL = TEST_URL.replace('reddit.com', 'new.reddit.com');
     document.body.querySelector('#test-url')!.setAttribute('value', newRedditURL);
     const actual = getPostURL();
@@ -244,33 +215,32 @@ describe('getPostURL', () => {
 });
 
 describe('shareButtonClick', () => {
-  beforeEach(async () => {
-    vi.stubGlobal('navigator', {
-      clipboard: {
-        writeText: vi.fn(),
+  beforeEach(() => {
+    Object.defineProperty(global, 'navigator', {
+      value: {
+        clipboard: {
+          writeText: jest.fn(),
+        },
       },
+      writable: true,
     });
-    setHTMLStringAsDocument('<body></body>');
+
+    document.body.innerHTML = '<body></body>';
   });
 
   afterEach(() => {
-    vi.unstubAllGlobals();
+    jest.restoreAllMocks();
   });
 
-  it('should invoke clipboardToast and pass the mouse coordinates', async () => {
+  test('should invoke clipboardToast and pass the mouse coordinates', async () => {
     const expectedX = 9;
     const expectedY = 9;
     let actualX = 0;
     let actualY = 0;
-    const spyClipboard = vi.spyOn(common, 'clipboardToast');
+    const spyClipboard = jest.spyOn(common, 'clipboardToast');
     spyClipboard.mockImplementation((x: number, y: number) => {
       actualX = x;
       actualY = y;
-    });
-    vi.stubGlobal('navigator', {
-      clipboard: {
-        writeText: vi.fn(),
-      },
     });
     const mouseEvent = new MouseEvent('click', { clientX: expectedX, clientY: expectedY });
     await shareButtonClick(mouseEvent, '');
@@ -279,15 +249,22 @@ describe('shareButtonClick', () => {
     expect(actualY).toBe(expectedY);
   });
 
-  it('should copy the URL to the clipboard', async () => {
+  test('should copy the URL to the clipboard', async () => {
     let actualText: string | null = null;
-    vi.stubGlobal('navigator', {
-      clipboard: {
-        writeText: vi.fn().mockImplementation((text: string) => {
-          actualText = text;
-        }),
+    Object.defineProperty(global, 'navigator', {
+      value: {
+        clipboard: {
+          writeText: jest.fn().mockImplementation((text: string) => {
+            actualText = text;
+          }),
+          isNewOrOldReddit,
+        },
       },
+      writable: true,
     });
+    jest.mock('../common', () => ({
+      clipboardToast: jest.fn(),
+    }));
     const expected = 'url';
     const mouseEvent = new MouseEvent('click');
     await shareButtonClick(mouseEvent, expected);

@@ -27,6 +27,7 @@ export default [
       '@typescript-eslint/no-unused-vars': 'warn',
       'security/detect-non-literal-fs-filename': 'off',
       'no-unsanitized/property': 'off',
+      'no-unused-labels': 'off',
     },
   },
   {
