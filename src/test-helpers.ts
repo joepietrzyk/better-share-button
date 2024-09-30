@@ -1,4 +1,4 @@
-﻿import {JSDOM} from 'jsdom';
+﻿import { JSDOM } from 'jsdom';
 
 /**
  * Uses JSDOM to stub the global document with the provided HTML

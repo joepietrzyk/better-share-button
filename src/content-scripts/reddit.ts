@@ -1,5 +1,5 @@
-﻿import {clipboardToast, isBrowser, isElement} from '../common';
-import {loadPreferences, RedditPreference, UserPreferences} from '../settings';
+﻿import { clipboardToast, isBrowser, isElement } from '../common';
+import { loadPreferences, RedditPreference, UserPreferences } from '../settings';
 import './reddit-styles.css';
 
 // Run the main logic only when the script is executed directly
@@ -11,15 +11,15 @@ if (isBrowser()) {
  * Interface representing the result of determining whether the page is using new or old Reddit.
  */
 interface RedditVersion {
-    /**
-     * Indicates if the current page is using new Reddit.
-     */
-    isNewReddit: boolean;
+  /**
+   * Indicates if the current page is using new Reddit.
+   */
+  isNewReddit: boolean;
 
-    /**
-     * Indicates if the current page is using old Reddit.
-     */
-    isOldReddit: boolean;
+  /**
+   * Indicates if the current page is using old Reddit.
+   */
+  isOldReddit: boolean;
 }
 
 /**
@@ -65,7 +65,7 @@ function main(preferences: UserPreferences): void {
       addShareButton(embedButton, 'right', event => {
         let url = getPostURL();
         url = convertToShareableURL(url, preferences.reddit);
-         
+
         shareButtonClick(event, url).then();
       });
     });
@@ -112,8 +112,11 @@ export function createEmbedButtonObserver(onShareButtonFind: (embedButton: HTMLD
  * @param position - The position to add the share button ('right' or 'left').
  * @param buttonClickListener - The event listener to add to the button's onClick event
  */
-export function addShareButton(siblingElement: Element, position: 'right' | 'left', 
-  buttonClickListener: (event: MouseEvent) => void): void {
+export function addShareButton(
+  siblingElement: Element,
+  position: 'right' | 'left',
+  buttonClickListener: (event: MouseEvent) => void
+): void {
   // create the button tooltip programmatically
   const shareButtonDiv = document.createElement('div');
   shareButtonDiv.className = 'bsb-post-sharing-option';
@@ -130,7 +133,7 @@ export function addShareButton(siblingElement: Element, position: 'right' | 'lef
   el.classList.add('bsb-tooltip-inner');
   el.textContent = 'Better Embed Link';
   parent.appendChild(el);
-  
+
   shareButtonDiv.addEventListener('click', buttonClickListener);
   if (position === 'right') {
     siblingElement.insertAdjacentElement('afterend', shareButtonDiv);
@@ -165,14 +168,14 @@ export function getPostURL(): string {
 export function convertToShareableURL(url: string, preference: RedditPreference): string {
   let newURL: string;
   switch (preference) {
-  case 'rxddit':
-    newURL = url.replace('reddit.', 'rxddit.');
-    break;
-  case 'vxreddit':
-    newURL = url.replace('reddit.', 'vxreddit.');
-    break;
-  default:
-    newURL = url;
+    case 'rxddit':
+      newURL = url.replace('reddit.', 'rxddit.');
+      break;
+    case 'vxreddit':
+      newURL = url.replace('reddit.', 'vxreddit.');
+      break;
+    default:
+      newURL = url;
   }
   return newURL;
 }

@@ -4,6 +4,7 @@ import teslint from 'typescript-eslint';
 import jsdoc from 'eslint-plugin-jsdoc';
 import security from 'eslint-plugin-security';
 import noUnsanitized from 'eslint-plugin-no-unsanitized';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 
 export default [
@@ -11,22 +12,13 @@ export default [
     ignores: ['dist'],
   },
   eslint.configs.recommended,
-  ...teslint.configs.recommended, 
+  ...teslint.configs.recommended,
   security.configs.recommended,
   noUnsanitized.configs.recommended,
+  prettierRecommended,
   jsdoc.configs['flat/recommended-typescript-error'],
   {
-    rules: {
-      'arrow-parens': ['error', 'as-needed'],
-      'indent': ['error', 2],
-      'max-len': ['error', 120],
-      'semi': ['error', 'always'],
-      'eol-last': ['error', 'always'],
-      'quotes': ['error', 'single'],
-      'comma-dangle': ['error', { arrays: 'always-multiline', objects: 'always-multiline'}],
-      'brace-style': ['error', '1tbs'],
-      'comma-spacing': ['error', { before: false, after: true }],
-    },
+    rules: {},
   },
   {
     files: ['**/*.test.ts', '**/*.spec.ts'],

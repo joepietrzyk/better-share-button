@@ -5,10 +5,7 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "types": [
-      "firefox-webext-browser",
-      "vitest/globals"
-    ],
+    "types": ["firefox-webext-browser", "vitest/globals"],
     "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "global.d.ts"],

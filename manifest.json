@@ -1,7 +1,7 @@
 ﻿{
   "manifest_version": 2,
   "name": "Better Share Button",
-  "content_scripts" : [
+  "content_scripts": [
     {
       "matches": ["*://*.reddit.com/*"],
       "js": ["reddit.bundle.js"]
@@ -15,7 +15,7 @@
     "page": "options.html",
     "open_in_tab": false
   },
-  "permissions": [ "storage" ],
+  "permissions": ["storage"],
   "browser_action": {
     "default_icon": "assets/icon.png",
     "default_title": "Browse Time",

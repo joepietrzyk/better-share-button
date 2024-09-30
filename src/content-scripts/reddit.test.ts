@@ -4,13 +4,14 @@ import {
   createEmbedButtonObserver,
   getAppBody,
   getPostURL,
-  isNewOrOldReddit, shareButtonClick
+  isNewOrOldReddit,
+  shareButtonClick,
 } from './reddit';
-import {JSDOM} from 'jsdom';
+import { JSDOM } from 'jsdom';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as common from '../common';
-import {resolveOnNextFrame, setHTMLStringAsDocument} from '../test-helpers';
+import { resolveOnNextFrame, setHTMLStringAsDocument } from '../test-helpers';
 
 function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
   vi.stubGlobal('location', {
@@ -72,7 +73,7 @@ describe('getAppBody', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
-  
+
   it('should find the main body of the reddit app when present', () => {
     const htmlString = '<body><div class="body"></div><div class="content" role="main"></div></body>';
     setHTMLStringAsDocument(htmlString);
@@ -84,10 +85,10 @@ describe('getAppBody', () => {
     expect(actualClass).toBe('content');
   });
 
-  it('should fall back to the document body if the app body isn\'t found', () => {
+  it("should fall back to the document body if the app body isn't found", () => {
     const htmlString = '<body></body>';
     setHTMLStringAsDocument(htmlString);
-    
+
     const actualEl = getAppBody();
     const actualTagName = actualEl.tagName;
     expect(actualTagName.toLowerCase()).toBe('body');
@@ -95,13 +96,13 @@ describe('getAppBody', () => {
 });
 
 describe('createEmbedButtonObserver', () => {
-  const EMBED_BUTTON_HTML = 
-        '<div class="post-sharing-option post-sharing-option-embed" data-post-sharing-option="embed">' +
-        '<div class="c-tooltip" role="tooltip">' +
-        '<div class="tooltip-arrow bottom"></div>' +
-        '<div class="tooltip-inner">Embed Post</div>' +
-        '</div>' +
-        '</div>';
+  const EMBED_BUTTON_HTML =
+    '<div class="post-sharing-option post-sharing-option-embed" data-post-sharing-option="embed">' +
+    '<div class="c-tooltip" role="tooltip">' +
+    '<div class="tooltip-arrow bottom"></div>' +
+    '<div class="tooltip-inner">Embed Post</div>' +
+    '</div>' +
+    '</div>';
   beforeEach(() => {
     setHTMLStringAsDocument('<body></body>');
   });
@@ -120,7 +121,7 @@ describe('createEmbedButtonObserver', () => {
     const observer = createEmbedButtonObserver(() => {
       hasFired = true;
     });
-    observer.observe(document.body, {childList: true, subtree: true});
+    observer.observe(document.body, { childList: true, subtree: true });
     const embedButtonParent = document.createElement('div');
     embedButtonParent.innerHTML = EMBED_BUTTON_HTML;
     document.body.appendChild(embedButtonParent);
@@ -131,8 +132,8 @@ describe('createEmbedButtonObserver', () => {
 
   it('should include the embed button when it invokes the callback', async () => {
     let actualEmbedButton: HTMLDivElement | null = null;
-    const observer = createEmbedButtonObserver(embedButton => actualEmbedButton = embedButton);
-    observer.observe(document.body, {childList: true, subtree: true});
+    const observer = createEmbedButtonObserver(embedButton => (actualEmbedButton = embedButton));
+    observer.observe(document.body, { childList: true, subtree: true });
     const embedButtonParent = document.createElement('div');
     embedButtonParent.innerHTML = EMBED_BUTTON_HTML;
     document.body.appendChild(embedButtonParent);
@@ -145,17 +146,17 @@ describe('createEmbedButtonObserver', () => {
     observer.disconnect();
   });
 });
-  
+
 describe('addShareButton', () => {
   beforeEach(() => {
     setHTMLStringAsDocument('<body></body>');
   });
-    
+
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it('should add the share button to the right of the provided element when passed \'right\'', () => {
+  it("should add the share button to the right of the provided element when passed 'right'", () => {
     const sibling = document.createElement('div');
     document.body.appendChild(sibling);
     addShareButton(sibling, 'right', () => {});
@@ -167,7 +168,7 @@ describe('addShareButton', () => {
     expect(actualClassList).toContain('bsb-post-sharing-option');
   });
 
-  it('should add the share button to the left of the provided element when passed \'left\'', () => {
+  it("should add the share button to the left of the provided element when passed 'left'", () => {
     const sibling = document.createElement('div');
     document.body.appendChild(sibling);
     addShareButton(sibling, 'left', () => {});
@@ -191,7 +192,7 @@ describe('addShareButton', () => {
     expect(hasFired).toBe(true);
   });
 });
-  
+
 describe('convertToShareableURL', () => {
   beforeAll(() => {
     mockRedditURL();
@@ -213,11 +214,11 @@ describe('getPostURL', () => {
   const html = fs.readFileSync(filePath, 'utf8');
   const TEST_URL = 'https://reddit.com/r/test/comments/1111111/test/?ref=share&amp;ref_source=link';
   const STRIPPED_URL = 'https://reddit.com/r/test/comments/1111111/test/';
-  
+
   beforeEach(() => {
     setHTMLStringAsDocument(html);
   });
-  
+
   afterEach(() => {
     vi.unstubAllGlobals();
   });
@@ -226,22 +227,22 @@ describe('getPostURL', () => {
     const actual = getPostURL();
     expect(actual).toBe(STRIPPED_URL);
   });
-  
+
   it('should strip old.reddit from the URL', () => {
     const oldRedditURL = TEST_URL.replace('reddit.com', 'old.reddit.com');
-      document.body.querySelector('#test-url')!.setAttribute('value', oldRedditURL);
-      const actual = getPostURL();
-      expect(actual).toBe(STRIPPED_URL);
+    document.body.querySelector('#test-url')!.setAttribute('value', oldRedditURL);
+    const actual = getPostURL();
+    expect(actual).toBe(STRIPPED_URL);
   });
 
   it('should strip new.reddit from the URL', () => {
     const newRedditURL = TEST_URL.replace('reddit.com', 'new.reddit.com');
-      document.body.querySelector('#test-url')!.setAttribute('value', newRedditURL);
-      const actual = getPostURL();
-      expect(actual).toBe(STRIPPED_URL);
+    document.body.querySelector('#test-url')!.setAttribute('value', newRedditURL);
+    const actual = getPostURL();
+    expect(actual).toBe(STRIPPED_URL);
   });
 });
-  
+
 describe('shareButtonClick', () => {
   beforeEach(async () => {
     vi.stubGlobal('navigator', {
@@ -251,7 +252,7 @@ describe('shareButtonClick', () => {
     });
     setHTMLStringAsDocument('<body></body>');
   });
-    
+
   afterEach(() => {
     vi.unstubAllGlobals();
   });
@@ -262,7 +263,7 @@ describe('shareButtonClick', () => {
     let actualX = 0;
     let actualY = 0;
     const spyClipboard = vi.spyOn(common, 'clipboardToast');
-    spyClipboard.mockImplementation((x: number,  y: number) => {
+    spyClipboard.mockImplementation((x: number, y: number) => {
       actualX = x;
       actualY = y;
     });

@@ -8,32 +8,32 @@ type PreferenceOverride<T> = 'default' | T;
  * Base interface representing the common structure of all preference versions.
  */
 interface BSBPreferences {
-    /**
-     * Version of the preferences format.
-     */
-    version: string;
+  /**
+   * Version of the preferences format.
+   */
+  version: string;
 }
 
 /**
  * Interface representing the preferences structure for version 1.
  */
 interface BSBPreferences_v1 extends BSBPreferences {
-    /**
-     * Version identifier for v1 preferences.
-     */
-    version: '1';
-    /**
-     * User's preference for Reddit domains.
-     */
-    reddit: RedditPreference;
-    /**
-     * User's preference for X (formerly known as Twitter) domains.
-     */
-    x: XPreference;
-    /**
-     * User's preference for Instagram domains.
-     */
-    instagram: InstagramPreference;
+  /**
+   * Version identifier for v1 preferences.
+   */
+  version: '1';
+  /**
+   * User's preference for Reddit domains.
+   */
+  reddit: RedditPreference;
+  /**
+   * User's preference for X (formerly known as Twitter) domains.
+   */
+  x: XPreference;
+  /**
+   * User's preference for Instagram domains.
+   */
+  instagram: InstagramPreference;
 }
 
 /**

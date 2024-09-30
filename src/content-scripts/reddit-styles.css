@@ -1,81 +1,81 @@
 ﻿.bsb-post-sharing-option {
-    background-size: 26px 26px;
-    cursor: pointer;
-    display: inline-block;
-    height: 26px;
-    margin-right: 5px;
-    margin-top: 5px;
-    position: relative;
-    width: 26px;
+  background-size: 26px 26px;
+  cursor: pointer;
+  display: inline-block;
+  height: 26px;
+  margin-right: 5px;
+  margin-top: 5px;
+  position: relative;
+  width: 26px;
 }
 
 .bsb-c-tooltip {
-    position: absolute;
-    z-index: 1002;
-    display: block;
-    visibility: visible;
-    font-size: 11px;
-    line-height: 1.4;
-    opacity: 0;
-    filter: alpha(opacity=0);
+  position: absolute;
+  z-index: 1002;
+  display: block;
+  visibility: visible;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0;
+  filter: alpha(opacity=0);
 }
 
 .bsb-post-sharing-option:hover .bsb-c-tooltip {
-    bottom: 100%;
-    opacity: 1;
+  bottom: 100%;
+  opacity: 1;
 }
 
 .bsb-post-sharing-option .bsb-c-tooltip {
-    transform: translate(-50%,-8px);
-    -webkit-transform: translate(-50%,-8px);
-    -moz-transform: translate(-50%,-8px);
-    -o-transform: translate(-50%,-8px);
-    -ms-transform: translate(-50%,-8px);
-    -webkit-transition: all 0.15s ease 0s;
-    -moz-transition: all 0.15s ease 0s;
-    -o-transition: all 0.15s ease 0s;
-    -ms-transition: all 0.15s ease 0s;
-    transition: all 0.15s ease 0s;
-    bottom: 50%;
-    left: 50%;
-    pointer-events: none;
+  transform: translate(-50%, -8px);
+  -webkit-transform: translate(-50%, -8px);
+  -moz-transform: translate(-50%, -8px);
+  -o-transform: translate(-50%, -8px);
+  -ms-transform: translate(-50%, -8px);
+  -webkit-transition: all 0.15s ease 0s;
+  -moz-transition: all 0.15s ease 0s;
+  -o-transition: all 0.15s ease 0s;
+  -ms-transition: all 0.15s ease 0s;
+  transition: all 0.15s ease 0s;
+  bottom: 50%;
+  left: 50%;
+  pointer-events: none;
 }
 
 .bsb-c-tooltip .bsb-tooltip-arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-top-color: transparent;
-    border-style: solid;
-    border-width: 8px;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-top-color: transparent;
+  border-style: solid;
+  border-width: 8px;
 }
 
 .bsb-post-sharing-option .bsb-c-tooltip .bsb-tooltip-arrow {
-    transform: translate(-50%,-1px);
-    -webkit-transform: translate(-50%,-1px);
-    -moz-transform: translate(-50%,-1px);
-    -o-transform: translate(-50%,-1px);
-    -ms-transform: translate(-50%,-1px);
-    border-top-color: #ffffff;
-    left: 50%;
-    top: 100%;
+  transform: translate(-50%, -1px);
+  -webkit-transform: translate(-50%, -1px);
+  -moz-transform: translate(-50%, -1px);
+  -o-transform: translate(-50%, -1px);
+  -ms-transform: translate(-50%, -1px);
+  border-top-color: #ffffff;
+  left: 50%;
+  top: 100%;
 }
 
 .bsb-c-tooltip .bsb-tooltip-inner {
-    padding: 2px 8px 3px;
-    color: #ffffff;
-    text-decoration: none;
-    background-color: #000000;
-    border-radius: 2px;
+  padding: 2px 8px 3px;
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #000000;
+  border-radius: 2px;
 }
 
 .bsb-post-sharing-option .bsb-c-tooltip .bsb-tooltip-inner {
-    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    background: #ffffff;
-    border: 1px solid #e6e6e6;
-    color: #222222;
-    padding: 10px;
-    white-space: nowrap;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  color: #222222;
+  padding: 10px;
+  white-space: nowrap;
 }

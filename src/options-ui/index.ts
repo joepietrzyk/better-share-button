@@ -1,5 +1,5 @@
-﻿import {loadPreferences, RedditPreference, savePreferences, UserPreferences, XPreference} from '../settings';
-import {isBrowser} from '../common';
+﻿import { loadPreferences, RedditPreference, savePreferences, UserPreferences, XPreference } from '../settings';
+import { isBrowser } from '../common';
 import './options.css';
 
 if (isBrowser()) {
@@ -26,7 +26,7 @@ function main(preferences: UserPreferences) {
       await savePreferences();
     });
   }
-  
+
   document.body.querySelector('#loading')?.classList.add('hidden');
   document.body.querySelector('#settings')?.classList.remove('hidden');
 }

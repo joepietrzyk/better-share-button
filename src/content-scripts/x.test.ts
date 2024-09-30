@@ -1,12 +1,16 @@
 ﻿import {
   attachToDropdown,
-  BSB_SHARE_BUTTON_ATTRIBUTE, convertXLink, createShareButton,
-  createTweetObserver, findShareButton, getDropdown,
+  BSB_SHARE_BUTTON_ATTRIBUTE,
+  convertXLink,
+  createShareButton,
+  createTweetObserver,
+  findShareButton,
+  getDropdown,
   getLinkFromArticle,
   MENU_HOVER_CLASS,
-  shareButtonClick
+  shareButtonClick,
 } from './x';
-import {resolveOnNextFrame, stubClipboard} from '../test-helpers';
+import { resolveOnNextFrame, stubClipboard } from '../test-helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
@@ -17,13 +21,16 @@ describe('createTweetObserver', () => {
   beforeEach(() => {
     document.documentElement.innerHTML = '<head><title>Unit tests</title></head><body></body>';
   });
-  
+
   it('should invoke the onTweetAdd callback when a tweet is added', async () => {
     let actualArticle: Element | null = null;
-    const observer = createTweetObserver(article => {
-      actualArticle = article;
-    }, () => {});
-    observer.observe(document.body, {childList: true, subtree: true});
+    const observer = createTweetObserver(
+      article => {
+        actualArticle = article;
+      },
+      () => {}
+    );
+    observer.observe(document.body, { childList: true, subtree: true });
     const div = document.createElement('div');
     div.innerHTML = '<article id="test"></article>';
     document.body.appendChild(div);
@@ -35,11 +42,13 @@ describe('createTweetObserver', () => {
 
   it('should invoke the onDropdownAdd callback when the dropdown menu is added', async () => {
     let actualDropdown: Element | null = null;
-    const observer = createTweetObserver(() => {},
+    const observer = createTweetObserver(
+      () => {},
       dropdown => {
         actualDropdown = dropdown;
-      });
-    observer.observe(document.body, {childList: true, subtree: true});
+      }
+    );
+    observer.observe(document.body, { childList: true, subtree: true });
     const div = document.createElement('div');
     div.innerHTML = '<div data-testid="Dropdown"></div>';
     document.body.appendChild(div);
@@ -57,7 +66,7 @@ describe('shareButtonClick', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
-  
+
   it('should click off the menu to close the dropdown', async () => {
     stubClipboard();
     let hasClicked = false;
@@ -71,24 +80,20 @@ describe('shareButtonClick', () => {
     expect(hasClicked).toBe(true);
   });
 
-  it('should copy the link to the clipboard', () => {
-        
-  });
+  it('should copy the link to the clipboard', () => {});
 
-  it('should invoke clipboardToast with the cursor\'s x and y coordinates', () => {
-        
-  });
+  it("should invoke clipboardToast with the cursor's x and y coordinates", () => {});
 });
 
 describe('getLinkFromArticle', () => {
   const expectedLink = 'https://x.com/test/status/1';
   const articleHTML =
-      '<article>' +
-      '<a dir="ltr" href="/test"></a>' +
-      '<a dir="ltr" href="/hashtag/test-hashtag?src=hashtag_click"></a>' +
-      '<a id="correct-link" dir="ltr" href="/test/status/1"></a>' +
-      '<a dir="ltr" href="/test/status/1/hidden"></a>' +
-      '</article>';
+    '<article>' +
+    '<a dir="ltr" href="/test"></a>' +
+    '<a dir="ltr" href="/hashtag/test-hashtag?src=hashtag_click"></a>' +
+    '<a id="correct-link" dir="ltr" href="/test/status/1"></a>' +
+    '<a dir="ltr" href="/test/status/1/hidden"></a>' +
+    '</article>';
   beforeEach(() => {
     const div = document.createElement('div');
     div.innerHTML = articleHTML;
@@ -97,7 +102,7 @@ describe('getLinkFromArticle', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
-  
+
   it('should get a link that matches the pattern `/user/status/id` from your feed', () => {
     vi.stubGlobal('location', {
       href: 'https://x.com',
@@ -111,7 +116,7 @@ describe('getLinkFromArticle', () => {
     expect(actualLink).toBe(expectedLink);
   });
 
-  it('should fall back to the window URL if it\'s unable to find it in the tweet', () => {
+  it("should fall back to the window URL if it's unable to find it in the tweet", () => {
     vi.stubGlobal('location', {
       href: expectedLink,
       protocol: 'https:',
@@ -133,7 +138,7 @@ describe('createShareButton', () => {
     expect(button.getAttribute('role')).toBeTruthy();
     expect(button.getAttribute('role')).toBe('menuitem');
   });
-  
+
   it('should add the hover style to the button when hovered and remove when the mouse moves away', () => {
     const button = createShareButton();
     const mouseenter = new MouseEvent('mouseenter', {
@@ -157,7 +162,7 @@ describe('createShareButton', () => {
     expect(svg).not.toBeNull();
   });
 
-  it('should contain the text \'Better share link\'', () => {
+  it("should contain the text 'Better share link'", () => {
     const button = createShareButton();
     const textSpan = button.querySelector('span');
     expect(textSpan).not.toBeNull();
@@ -169,7 +174,7 @@ describe('getDropdown', () => {
   beforeEach(() => {
     document.body.innerHTML = dropdownHTML;
   });
-  
+
   it('should find the dropdown when present', () => {
     const dropdown = getDropdown(document.body);
     expect(dropdown).not.toBeNull();
@@ -182,7 +187,7 @@ describe('getDropdown', () => {
   it('should ignore dropdowns with our custom attribute added', () => {
     const oldDropdownItem = document.body.querySelector('#dropdown')!.children[0]!;
     oldDropdownItem.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE, 'true');
-    
+
     const actual = getDropdown(document.body);
     expect(actual).toBeNull();
   });
@@ -192,7 +197,7 @@ describe('attachToDropdown', () => {
   beforeEach(() => {
     document.body.innerHTML = dropdownHTML;
   });
-  
+
   it('should attach the button to the top of the dropdown', () => {
     const button = document.createElement('div');
     button.id = 'my-button';
@@ -205,33 +210,28 @@ describe('attachToDropdown', () => {
 });
 
 describe('findShareButton', () => {
-  it('should locate a tweet\'s share button via its SVG and return the parent button', () => {
-    const html = 
-            '<article>' +
-            '<button id="correct-button">' +
-            '<svg></svg>' +
-            '</button>' +
-            '</article>';
+  it("should locate a tweet's share button via its SVG and return the parent button", () => {
+    const html = '<article>' + '<button id="correct-button">' + '<svg></svg>' + '</button>' + '</article>';
     const div = document.createElement('div');
     div.innerHTML = html;
-    
+
     const actualButton = findShareButton(div.children[0]);
     expect(actualButton).not.toBeNull();
     expect(actualButton!.id).toBe('correct-button');
   });
 
   it('should not locate any button except the share button', () => {
-    const html = 
-        '<article>' +
-        '<button id="wrong-button">' +
-        '<svg></svg>' +
-        '</button>' +
-        '<button id="wrong-button-2">' +
-        '<svg></svg>\' +\n' +
-        '</button>' +
-        '<button id="correct-button">' +
-        '<svg></svg>' +
-        '</button>';
+    const html =
+      '<article>' +
+      '<button id="wrong-button">' +
+      '<svg></svg>' +
+      '</button>' +
+      '<button id="wrong-button-2">' +
+      "<svg></svg>' +\n" +
+      '</button>' +
+      '<button id="correct-button">' +
+      '<svg></svg>' +
+      '</button>';
     const div = document.createElement('div');
     div.innerHTML = html;
     const actualButton = findShareButton(div.children[0]);
@@ -244,31 +244,31 @@ describe('convertXLink', () => {
   const testHref = '/test/1';
   const testXInput = 'https://x.com' + testHref;
   const testTwitterInput = 'https://twitter.com' + testHref;
-  
+
   it('should handle twitter.com and x.com URLs', () => {
     const actualXLink = convertXLink(testXInput, 'fixupx');
     const actualTwitterLink = convertXLink(testTwitterInput, 'fixupx');
-    
+
     expect(actualXLink).toBe('https://fixupx.com' + testHref);
     expect(actualTwitterLink).toBe('https://fixupx.com' + testHref);
   });
 
-  it('should use the hostname fixupx.com when the preference is \'fixupx\'', () => {
+  it("should use the hostname fixupx.com when the preference is 'fixupx'", () => {
     const actualXLink = convertXLink(testXInput, 'fixupx');
     expect(actualXLink).toBe('https://fixupx.com' + testHref);
   });
-  
-  it('should use the hostname fxtwitter.com when the preference is \'fxtwitter\'', () => {
+
+  it("should use the hostname fxtwitter.com when the preference is 'fxtwitter'", () => {
     const actualXLink = convertXLink(testXInput, 'fxtwitter');
     expect(actualXLink).toBe('https://fxtwitter.com' + testHref);
   });
 
-  it('should use the hostname twittpr.com when the preference is \'twittpr\'', () => {
+  it("should use the hostname twittpr.com when the preference is 'twittpr'", () => {
     const actualXLink = convertXLink(testXInput, 'twittpr');
     expect(actualXLink).toBe('https://twittpr.com' + testHref);
   });
 
-  it('should use the hostname vxtwitter.com when the preference is \'vxtwitter\'', () => {
+  it("should use the hostname vxtwitter.com when the preference is 'vxtwitter'", () => {
     const actualXLink = convertXLink(testXInput, 'vxtwitter');
     expect(actualXLink).toBe('https://vxtwitter.com' + testHref);
   });

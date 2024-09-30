@@ -1,9 +1,9 @@
-import {loadPreferences, UserPreferences, XPreference} from '../settings';
-import {clipboardToast, isBrowser, isElement} from '../common';
+import { loadPreferences, UserPreferences, XPreference } from '../settings';
+import { clipboardToast, isBrowser, isElement } from '../common';
 
 // the CSS class used by dropdown menu items when hovered
 export const MENU_HOVER_CLASS = 'r-1cuuowz';
-// the attribute used 
+// the attribute used
 export const BSB_SHARE_BUTTON_ATTRIBUTE = 'bsb-share-button';
 
 if (isBrowser()) {
@@ -17,20 +17,23 @@ if (isBrowser()) {
  */
 function main(preferences: UserPreferences) {
   let link = '';
-  const observer = createTweetObserver(article => {
-    const shareButton = findShareButton(article);
-    shareButton?.addEventListener('click', () => {
-      link = getLinkFromArticle(article);
-    });
-  }, dropdown => {
-    const bsb = createShareButton();
-    (bsb as HTMLDivElement).addEventListener('click', event => {
-      const convertedLink = convertXLink(link, preferences.x);
-      shareButtonClick(event, convertedLink, dropdown).then();
-    });
-    attachToDropdown(dropdown, bsb);
-  });
-  observer.observe(document.body, {childList: true, subtree: true});
+  const observer = createTweetObserver(
+    article => {
+      const shareButton = findShareButton(article);
+      shareButton?.addEventListener('click', () => {
+        link = getLinkFromArticle(article);
+      });
+    },
+    dropdown => {
+      const bsb = createShareButton();
+      (bsb as HTMLDivElement).addEventListener('click', event => {
+        const convertedLink = convertXLink(link, preferences.x);
+        shareButtonClick(event, convertedLink, dropdown).then();
+      });
+      attachToDropdown(dropdown, bsb);
+    }
+  );
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
 /**
@@ -39,8 +42,10 @@ function main(preferences: UserPreferences) {
  * @param onDropdownAdd - callback to be invoked when a dropdown is added
  * @returns A MutationObserver that observes the DOM for changes.
  */
-export function createTweetObserver(onTweetAdd: (article: Element) => void, 
-  onDropdownAdd: (dropdown: Element) => void): MutationObserver {
+export function createTweetObserver(
+  onTweetAdd: (article: Element) => void,
+  onDropdownAdd: (dropdown: Element) => void
+): MutationObserver {
   return new MutationObserver(mutationList => {
     mutationList.forEach(mutation => {
       mutation.addedNodes.forEach(node => {
@@ -95,7 +100,7 @@ export function getLinkFromArticle(article: Element): string {
   } else {
     link = window.location.href;
   }
-  
+
   return link;
 }
 
@@ -107,8 +112,10 @@ export function createShareButton(): Element {
   const menuItemDiv = document.createElement('div');
   menuItemDiv.setAttribute('role', 'menuitem');
   menuItemDiv.setAttribute('tabindex', '0');
-  menuItemDiv.setAttribute('class', 
-    'css-175oi2r r-1loqt21 r-18u37iz r-1mmae3n r-3pj75a r-13qz1uu r-o7ynqc r-6416eg r-1ny4l3l');
+  menuItemDiv.setAttribute(
+    'class',
+    'css-175oi2r r-1loqt21 r-18u37iz r-1mmae3n r-3pj75a r-13qz1uu r-o7ynqc r-6416eg r-1ny4l3l'
+  );
   menuItemDiv.setAttribute('bsb-share-button', 'true');
   const firstInnerDiv = document.createElement('div');
   firstInnerDiv.setAttribute('class', 'css-175oi2r r-1777fci r-faml9v');
@@ -118,10 +125,13 @@ export function createShareButton(): Element {
   svg.setAttribute('class', 'r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1nao33i r-1q142lx');
   const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  p.setAttribute('d', 'M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 ' +
+  p.setAttribute(
+    'd',
+    'M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 ' +
       '0 2.73 2.74 2.73 7.17 0 9.9l-1.42 1.42-1.41-1.42 1.41-1.41c1.96-1.96 1.96-5.12 0-7.07zm-2.12 3.53l-7.07 ' +
       '7.07-1.41-1.41 7.07-7.07 1.41 1.41zm-12.02.71l1.42-1.42 1.41 1.42-1.41 1.41c-1.96 1.96-1.96 5.12 0 7.07 1.95 ' +
-      '1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z');
+      '1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z'
+  );
   g.appendChild(p);
   svg.appendChild(g);
   firstInnerDiv.appendChild(svg);
@@ -146,7 +156,7 @@ export function createShareButton(): Element {
   menuItemDiv.addEventListener('mouseleave', () => {
     menuItemDiv.classList.remove(MENU_HOVER_CLASS);
   });
-  
+
   return menuItemDiv;
 }
 
@@ -181,7 +191,7 @@ export function findShareButton(article: Element): Element | null {
   if (svgs.length === 0) return null;
   // the share button svg will be the last svg added to the article
   const shareSvg = svgs[svgs.length - 1];
-  return shareSvg.closest('button') as Element || null;
+  return (shareSvg.closest('button') as Element) || null;
 }
 
 /**
@@ -193,21 +203,21 @@ export function findShareButton(article: Element): Element | null {
 export function convertXLink(link: string, preference: XPreference): string {
   let url = link.replace('twitter.com', 'x.com');
   switch (preference) {
-  case 'fixupx':
-    url = url.replace('x.com', 'fixupx.com');
-    break;
-  case 'fxtwitter':
-    url = url.replace('x.com', 'fxtwitter.com');
-    break;
-  case 'twittpr':
-    url = url.replace('x.com', 'twittpr.com');
-    break;
-  case 'vxtwitter':
-    url = url.replace('x.com', 'vxtwitter.com');
-    break;
-  default:
-    return link;
+    case 'fixupx':
+      url = url.replace('x.com', 'fixupx.com');
+      break;
+    case 'fxtwitter':
+      url = url.replace('x.com', 'fxtwitter.com');
+      break;
+    case 'twittpr':
+      url = url.replace('x.com', 'twittpr.com');
+      break;
+    case 'vxtwitter':
+      url = url.replace('x.com', 'vxtwitter.com');
+      break;
+    default:
+      return link;
   }
-  
+
   return url;
 }
