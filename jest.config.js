@@ -1,4 +1,10 @@
 ﻿export default {
+  collectCoverageFrom: ['src/**/*.ts'],
+  coverageDirectory: 'coverage',
+  coveragePathIgnorePatterns: [
+    '/test/integration/', // Ignore Selenium integration tests
+    '/node_modules/', // Always ignore node_modules
+  ],
   projects: [
     {
       displayName: 'unit',
@@ -6,8 +12,6 @@
       testEnvironment: 'jsdom',
       testMatch: ['**/test/unit/**/?(*.)+(test).[tj]s?(x)'],
       testPathIgnorePatterns: ['/node_modules/', '/tests/integration/'],
-      collectCoverageFrom: ['src/**/*.ts'],
-      coverageDirectory: 'coverage',
       moduleNameMapper: {
         '\\.(css|less|scss|sass)$': '<rootDir>/__mocks__/style-mock.js',
       },

@@ -11,10 +11,10 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "build": "webpack --mode production && web-ext build --overwrite-dest -s ./dist --artifacts-dir ./output",
-    "test": "jest",
+    "test": "jest --color",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --color --coverage",
     "test:watch": "jest --watch",
     "clean": "rm -rf output dist"
   },
