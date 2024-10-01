@@ -12,6 +12,7 @@ async function clickFirstXPost(driver: CustomWebDriver) {
   const bySharePost = By.css('button[aria-label="Share post"]');
   await driver.wait(until.elementLocated(bySharePost), 5000);
   const sharePost = await driver.findElement(bySharePost);
+  await driver.wait(until.elementIsVisible(sharePost), 5000);
   //await driver.executeScript('arguments[0].scrollIntoView(true)', sharePost);
   await sharePost.isDisplayed();
   await driver.executeScript('arguments[0].click()', sharePost);

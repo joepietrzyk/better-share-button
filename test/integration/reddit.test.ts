@@ -45,6 +45,7 @@ describe('old.reddit.com', () => {
       }
     }
     // switch the reddit setting to rxddit
+    await driver.wait(until.elementLocated(By.id('reddit')), 5000);
     const redditDropdown = await driver.findElement(By.id('reddit'));
     await driver.wait(until.elementIsVisible(redditDropdown), 5000);
     await redditDropdown.click();
