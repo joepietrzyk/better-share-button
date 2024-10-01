@@ -14,7 +14,8 @@
 
 ## Installation
 
-It's not available in the Firefox Add-ons store yet, but will be if version 1.0.0 is ever released. 
+It's not available in the Firefox Add-ons store yet, but will be if version 1.0.0 is ever released.
+
 1. Run `npm install`
 2. Run `npm build`
 3. Open Firefox and visit `about:debugging`
@@ -24,11 +25,12 @@ It's not available in the Firefox Add-ons store yet, but will be if version 1.0.
 
 # Development
 
-All development is done on Node.js version 20.17.0.
+All development is done on Node.js version 20.17.0. In order to run the integration tests, you will need to install [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/). You will need to create a .env file (see [.env.example](./.env.example)) that points to the Developer Edition Firefox binary.
 
 ## Contributing
 
 Right now this is a solo project. However, if you do wish to contribute, please follow these steps:
+
 1. Fork the repository.
 2. Commit all changes to a new branch (`git checkout -b feature/my-feature`).
 3. Ensure proper styling is enforced (`npm run format` and `npm run lint`).
