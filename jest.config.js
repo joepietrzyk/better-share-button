@@ -22,6 +22,7 @@
       testPathIgnorePatterns: ['/node_modules/', '/src/'],
       extensionsToTreatAsEsm: ['.ts'],
       setupFilesAfterEnv: ['<rootDir>/test/integration/jest.setup.ts'],
+      maxWorkers: 1,
       transform: {
         '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'test/integration/tsconfig.json' }],
       },
