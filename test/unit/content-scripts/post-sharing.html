@@ -1,0 +1,94 @@
+﻿<!doctype html>
+<html>
+  <div class="post-sharing" style="display: block">
+    <a href="javascript: void 0;" class="c-close c-hide-text">close this window</a>
+    <div class="post-sharing-main post-sharing-form" ref="$mainForm" style="display: block">
+      <div class="c-form-group">
+        <div class="post-sharing-label">Share with:</div>
+        <div class="post-sharing-options">
+          <div class="post-sharing-option post-sharing-option-facebook" data-post-sharing-option="facebook">
+            <div class="c-tooltip" role="tooltip">
+              <div class="tooltip-arrow bottom"></div>
+              <div class="tooltip-inner">Share to Facebook</div>
+            </div>
+          </div>
+          <div class="post-sharing-option post-sharing-option-twitter" data-post-sharing-option="twitter">
+            <div class="c-tooltip" role="tooltip">
+              <div class="tooltip-arrow bottom"></div>
+              <div class="tooltip-inner">Share to Twitter</div>
+            </div>
+          </div>
+          <div class="post-sharing-option post-sharing-option-tumblr" data-post-sharing-option="tumblr">
+            <div class="c-tooltip" role="tooltip">
+              <div class="tooltip-arrow bottom"></div>
+              <div class="tooltip-inner">Share to Tumblr</div>
+            </div>
+          </div>
+          <div class="post-sharing-option post-sharing-option-embed" data-post-sharing-option="embed">
+            <div class="c-tooltip" role="tooltip">
+              <div class="tooltip-arrow bottom"></div>
+              <div class="tooltip-inner">Embed Post</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="c-form-group">
+        <div class="post-sharing-label">Link:</div>
+        <input
+          id="test-url"
+          class="post-sharing-link-input c-form-control"
+          ref="$postSharingLinkInput"
+          name="link"
+          type="text"
+          readonly=""
+          value="https://reddit.com/r/test/comments/1111111/test/?ref=share&amp;ref_source=link"
+        />
+      </div>
+    </div>
+    <div class="post-sharing-email-form post-sharing-form" ref="$emailForm">
+      <p class="post-sharing-label">
+        <span ref="$emailFormPMLabel">Share via private message on reddit as false</span>
+      </p>
+      <div class="c-form-group">
+        <input
+          class="post-sharing-recipient-input c-form-control"
+          ref="$shareTo"
+          name="recipient"
+          type="text"
+          placeholder="username"
+          data-placeholder-reddit-pm="username"
+        />
+        <div class="c-form-control-feedback-wrapper" ref="$shareToFeedback">
+          <span class="c-form-control-feedback c-form-control-feedback-throbber"> </span>
+          <span class="c-form-control-feedback c-form-control-feedback-error"></span>
+          <span class="c-form-control-feedback c-form-control-feedback-success"></span>
+        </div>
+      </div>
+      <div class="c-form-group">
+        <textarea
+          class="post-sharing-message-input c-form-control"
+          ref="$shareMessage"
+          name="message"
+          placeholder="add optional message"
+        ></textarea>
+        <div class="c-form-control-feedback-wrapper" ref="$messageFeedback">
+          <span class="c-form-control-feedback c-form-control-feedback-throbber"></span>
+          <span class="c-form-control-feedback c-form-control-feedback-error"></span>
+          <span class="c-form-control-feedback c-form-control-feedback-success"></span>
+        </div>
+      </div>
+      <div class="c-form-group">
+        <div class="post-sharing-buttons">
+          <button class="post-sharing-submit c-btn c-btn-primary c-pull-right">send</button>
+          <button class="post-sharing-cancel c-btn c-btn-secondary c-pull-right">cancel</button>
+        </div>
+        <div class="c-form-control-feedback-wrapper" ref="$requestStateFeedback">
+          <span class="c-form-control-feedback c-form-control-feedback-throbber"></span>
+          <span class="c-form-control-feedback c-form-control-feedback-error"></span>
+          <span class="c-form-control-feedback c-form-control-feedback-success"></span>
+        </div>
+        <div class="post-sharing-shareplane" ref="$shareplane">sent!</div>
+      </div>
+    </div>
+  </div>
+</html>
