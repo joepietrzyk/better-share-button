@@ -3,13 +3,15 @@ import { Builder, WebDriver } from 'selenium-webdriver';
 import path from 'path';
 import { glob } from 'glob';
 
-interface CustomWebDriver extends WebDriver {
+export interface CustomWebDriver extends WebDriver {
   getAndWait(url: string): Promise<void>;
+  getClipboardText(): Promise<string>;
 }
 
 declare module 'selenium-webdriver' {
   interface WebDriver {
     getAndWait(url: string): Promise<void>;
+    getClipboardText(): Promise<string>;
   }
 }
 
@@ -27,6 +29,15 @@ WebDriver.prototype.getAndWait = async function (url: string, ms = 50): Promise<
   //   );
   //});
   await new Promise(resolve => setTimeout(resolve, ms));
+};
+
+WebDriver.prototype.getClipboardText = function (): Promise<string> {
+  return this.executeScript(() =>
+    navigator.clipboard
+      .readText()
+      .then(text => text)
+      .catch(err => console.log('Error reading clipboard:', err))
+  );
 };
 
 const extensionGlob = path.resolve(__dirname, '../../output') + '/better_share_button-*.xpi';

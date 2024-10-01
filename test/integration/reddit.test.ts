@@ -12,12 +12,7 @@ async function clickShareRedditPost(driver: WebDriver) {
   await sharingOption.click();
 
   // Perform clipboard check
-  return await driver.executeScript(() => {
-    return navigator.clipboard
-      .readText()
-      .then(text => text)
-      .catch(err => console.log('Error reading cliipboard:', err));
-  });
+  return driver.getClipboardText();
 }
 
 describe('old.reddit.com', () => {
