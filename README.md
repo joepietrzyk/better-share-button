@@ -25,7 +25,9 @@ It's not available in the Firefox Add-ons store yet, but will be if version 1.0.
 
 # Development
 
-All development is done on Node.js version 20.17.0. In order to run the integration tests, you will need to install [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/). You will need to create a .env file (see [.env.example](./.env.example)) that points to the Developer Edition Firefox binary.
+All development is done on Node.js version 20.17.0. In order to run the integration tests, you will need to install
+[Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) and [geckodriver](https://github.com/mozilla/geckodriver/releases)
+(currently on version 35). You will also need to create a .env file (see [.env.example](./.env.example)).
 
 ## Contributing
 

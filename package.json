@@ -15,7 +15,8 @@
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration",
     "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "clean": "rm -rf output dist"
   },
   "dependencies": {
     "bootstrap": "^5.3.3",

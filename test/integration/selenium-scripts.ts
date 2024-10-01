@@ -1,6 +1,5 @@
 ﻿import { Options, ServiceBuilder } from 'selenium-webdriver/firefox';
 import { Builder, WebDriver } from 'selenium-webdriver';
-import path from 'path';
 import { glob } from 'glob';
 
 export interface CustomWebDriver extends WebDriver {
@@ -40,8 +39,7 @@ WebDriver.prototype.getClipboardText = function (): Promise<string> {
   );
 };
 
-const extensionGlob = path.resolve(__dirname, '../../output') + '/better_share_button-*.xpi';
-const extensionPath = glob.sync(extensionGlob)[0];
+const extensionPath = glob.sync(process.env.EXTENSION_PATH_GLOB)[0];
 
 /**
  * Builds and configures the Firefox WebDriver
@@ -54,7 +52,7 @@ export function buildFirefoxDriver(): Promise<CustomWebDriver> {
   options.setBinary(process.env.FIREFOX_BINARY_PATH);
   options.addExtensions(extensionPath);
   options.addArguments('--headless');
-  const serviceBuilder = new ServiceBuilder(process.env.GECKODRIVER_PATH);
+  const serviceBuilder = new ServiceBuilder(process.env.GECKODRIVER_BINARY_PATH);
 
   return new Builder().forBrowser('firefox').setFirefoxOptions(options).setFirefoxService(serviceBuilder).build();
 }
