@@ -53,9 +53,11 @@ export function buildFirefoxDriver(): Promise<CustomWebDriver> {
   options.addArguments(
     '-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
   );
+  options.setPreference('dom.webdriver.enabled', false);
+  options.setPreference('useAutomationExtension', false);
   options.setBinary(process.env.FIREFOX_BINARY_PATH);
   options.addExtensions(extensionPath);
-  //options.addArguments('--headless');
+  options.addArguments('--headless');
   const serviceBuilder = new ServiceBuilder(process.env.GECKODRIVER_BINARY_PATH);
 
   return new Builder().forBrowser('firefox').setFirefoxOptions(options).setFirefoxService(serviceBuilder).build();
