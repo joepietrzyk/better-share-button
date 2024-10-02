@@ -26,9 +26,8 @@ It's not available in the Firefox Add-ons store yet, but will be if version 1.0.
 
 # Development
 
-All development is done on Node.js version 20.17.0. In order to run the integration tests, you will need to install
-[Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/) and [geckodriver](https://github.com/mozilla/geckodriver/releases/tag/v0.35.0)
-(currently on version 35). You will also need to create a .env file (see [.env.example](./.env.example)).
+All development is done on Node.js version `20.17.0` and pnpm version `9`. In order to run the integration tests, you will need to install
+[Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/), [geckodriver](https://github.com/mozilla/geckodriver/releases/tag/v0.35.0), and create a .env file (see [.env.example](./.env.example)).
 
 ## Contributing
 
@@ -36,8 +35,8 @@ Right now this is a solo project. However, if you do wish to contribute, please 
 
 1. Fork the repository.
 2. Commit all changes to a new branch (`git checkout -b feature/my-feature`).
-3. Ensure proper styling is enforced (`npm run format` and `npm run lint`).
-4. Make sure all the unit tests pass (`npm run test`). Add or modify any unit tests necessary for your changes.
+3. Ensure proper styling is enforced (`pnpm lint` and `pnpm lint`).
+4. Make sure all the unit tests pass (`pnpm test`). Add or modify any unit tests necessary for your changes.
 5. Open a Pull Request.
 
 ## License
