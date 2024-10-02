@@ -27,21 +27,21 @@ function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
 }
 
 describe('isNewOrOldReddit', () => {
-  test('should recognize the window URL as new.reddit.com', () => {
+  it('should recognize the window URL as new.reddit.com', () => {
     mockRedditURL('new.');
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(true);
     expect(actual.isOldReddit).toBe(false);
   });
 
-  test('should recognize the window URL as old.reddit.com', () => {
+  it('should recognize the window URL as old.reddit.com', () => {
     mockRedditURL('old.');
     const actual = isNewOrOldReddit();
     expect(actual.isNewReddit).toBe(false);
     expect(actual.isOldReddit).toBe(true);
   });
 
-  test('should recognize new reddit html as new reddit', () => {
+  it('should recognize new reddit html as new reddit', () => {
     mockRedditURL();
     document.body.innerHTML = '<shreddit-app></shreddit-app>';
     const actual = isNewOrOldReddit();
@@ -49,7 +49,7 @@ describe('isNewOrOldReddit', () => {
     expect(actual.isOldReddit).toBe(false);
   });
 
-  test('should treat all non-new reddit html as old reddit', () => {
+  it('should treat all non-new reddit html as old reddit', () => {
     mockRedditURL();
     document.body.innerHTML = '<div>This is reddit!</div>';
 
@@ -60,7 +60,7 @@ describe('isNewOrOldReddit', () => {
 });
 
 describe('getAppBody', () => {
-  test('should find the main body of the reddit app when present', () => {
+  it('should find the main body of the reddit app when present', () => {
     document.body.innerHTML = '<body><div class="body"></div><div class="content" role="main"></div></body>';
     const actualEl = getAppBody();
     const actualRole = actualEl.getAttribute('role');
@@ -89,13 +89,13 @@ describe('createEmbedButtonObserver', () => {
     document.body.innerHTML = '<body></body>';
   });
 
-  test('should create a MutationObserver', () => {
+  it('should create a MutationObserver', () => {
     const observer = createEmbedButtonObserver(() => {});
     expect(observer).not.toBeNull();
     expect(observer instanceof MutationObserver).toBe(true);
   });
 
-  test('should invoke the callback when the embed button is added', async () => {
+  it('should invoke the callback when the embed button is added', async () => {
     let hasFired = false;
     const observer = createEmbedButtonObserver(() => {
       hasFired = true;
@@ -109,7 +109,7 @@ describe('createEmbedButtonObserver', () => {
     observer.disconnect();
   });
 
-  test('should include the embed button when it invokes the callback', async () => {
+  it('should include the embed button when it invokes the callback', async () => {
     let actualEmbedButton: HTMLDivElement | null = null;
     const observer = createEmbedButtonObserver(embedButton => (actualEmbedButton = embedButton));
     observer.observe(document.body, { childList: true, subtree: true });
@@ -155,7 +155,7 @@ describe('addShareButton', () => {
     expect(actualClassList).toContain('bsb-post-sharing-option');
   });
 
-  test('should invoke the buttonClickListener when clicked', () => {
+  it('should invoke the buttonClickListener when clicked', () => {
     let hasFired = false;
     const sibling = document.createElement('div');
     document.body.appendChild(sibling);
@@ -173,12 +173,12 @@ describe('convertToShareableURL', () => {
     mockRedditURL();
   });
 
-  test('should convert reddit urls to vxreddit when the user chooses vxreddit', () => {
+  it('should convert reddit urls to vxreddit when the user chooses vxreddit', () => {
     const actual = convertToShareableURL(window.location.href, 'vxreddit');
     expect(actual).toEqual('https://vxreddit.com/r/funny');
   });
 
-  test('should convert reddit urls to rxddit when the user chooses rxddit', () => {
+  it('should convert reddit urls to rxddit when the user chooses rxddit', () => {
     const actual = convertToShareableURL(window.location.href, 'rxddit');
     expect(actual).toEqual('https://rxddit.com/r/funny');
   });
@@ -194,19 +194,19 @@ describe('getPostURL', () => {
     document.body.innerHTML = html;
   });
 
-  test('should extract the post URL from the DOM and remove the query strings', () => {
+  it('should extract the post URL from the DOM and remove the query strings', () => {
     const actual = getPostURL();
     expect(actual).toBe(STRIPPED_URL);
   });
 
-  test('should strip old.reddit from the URL', () => {
+  it('should strip old.reddit from the URL', () => {
     const oldRedditURL = TEST_URL.replace('reddit.com', 'old.reddit.com');
     document.body.querySelector('#test-url')!.setAttribute('value', oldRedditURL);
     const actual = getPostURL();
     expect(actual).toBe(STRIPPED_URL);
   });
 
-  test('should strip new.reddit from the URL', () => {
+  it('should strip new.reddit from the URL', () => {
     const newRedditURL = TEST_URL.replace('reddit.com', 'new.reddit.com');
     document.body.querySelector('#test-url')!.setAttribute('value', newRedditURL);
     const actual = getPostURL();
@@ -232,7 +232,7 @@ describe('shareButtonClick', () => {
     jest.restoreAllMocks();
   });
 
-  test('should invoke clipboardToast and pass the mouse coordinates', async () => {
+  it('should invoke clipboardToast and pass the mouse coordinates', async () => {
     const expectedX = 9;
     const expectedY = 9;
     let actualX = 0;
@@ -249,7 +249,7 @@ describe('shareButtonClick', () => {
     expect(actualY).toBe(expectedY);
   });
 
-  test('should copy the URL to the clipboard', async () => {
+  it('should copy the URL to the clipboard', async () => {
     let actualText: string | null = null;
     Object.defineProperty(global, 'navigator', {
       value: {

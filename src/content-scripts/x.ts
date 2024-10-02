@@ -25,12 +25,17 @@ function main(preferences: UserPreferences) {
       });
     },
     dropdown => {
-      const bsb = createShareButton();
-      (bsb as HTMLDivElement).addEventListener('click', event => {
-        const convertedLink = convertXLink(link, preferences.x);
-        shareButtonClick(event, convertedLink, dropdown).then();
-      });
-      attachToDropdown(dropdown, bsb);
+      if (link !== '') {
+        const bsb = createShareButton();
+        (bsb as HTMLDivElement).addEventListener('click', event => {
+          const convertedLink = convertXLink(link, preferences.x);
+          shareButtonClick(event, convertedLink, dropdown).then();
+        });
+        attachToDropdown(dropdown, bsb);
+      }
+    },
+    () => {
+      link = '';
     }
   );
   observer.observe(document.body, { childList: true, subtree: true });
@@ -40,11 +45,13 @@ function main(preferences: UserPreferences) {
  * Creates a MutationObserver that watches for added nodes and detects tweets and dropdowns.
  * @param onTweetAdd - callback to be invoked when a tweet is added
  * @param onDropdownAdd - callback to be invoked when a dropdown is added
+ * @param onDropdownRemove - callback to be invoked with a dropdown is removed
  * @returns A MutationObserver that observes the DOM for changes.
  */
 export function createTweetObserver(
   onTweetAdd: (article: Element) => void,
-  onDropdownAdd: (dropdown: Element) => void
+  onDropdownAdd: (dropdown: Element) => void,
+  onDropdownRemove?: () => void | null
 ): MutationObserver {
   return new MutationObserver(mutationList => {
     mutationList.forEach(mutation => {
@@ -61,6 +68,13 @@ export function createTweetObserver(
           onDropdownAdd(dropdown);
         }
       });
+      if (onDropdownRemove) {
+        mutation.removedNodes.forEach(node => {
+          if (!isElement(node)) return;
+          const bsbButton = node.querySelector(`[${BSB_SHARE_BUTTON_ATTRIBUTE}]`);
+          if (bsbButton) onDropdownRemove();
+        });
+      }
     });
   });
 }

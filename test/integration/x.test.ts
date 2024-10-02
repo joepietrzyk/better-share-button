@@ -21,7 +21,7 @@ async function clickFirstXPost(driver: CustomWebDriver): Promise<WebElement> {
 }
 
 describe('x.com', () => {
-  test('should copy a fixupx URL when the share button is clicked', async () => {
+  it('should copy a fixupx URL when the share button is clicked', async () => {
     const driver = await buildFirefoxDriver();
     await driver.get('https://x.com/elonmusk');
     await waitForXToLoad(driver);
