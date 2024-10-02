@@ -1,10 +1,26 @@
-﻿import { By, until, WebDriver } from 'selenium-webdriver';
-import { Select } from 'selenium-webdriver/lib/select';
-import { buildFirefoxDriver } from './selenium-scripts';
+﻿import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
+import { buildFirefoxDriver, changeExtensionOptionSelect, CustomWebDriver } from './selenium-scripts';
 
 async function clickShareRedditPost(driver: WebDriver) {
   // Wait for the sharing button to appear and click it
-  const sharingButton = await driver.wait(until.elementLocated(By.css('a.post-sharing-button')), 10000);
+  let retries = 3;
+  let sharingButtonEl: WebElement | null;
+  while (retries > 0) {
+    try {
+      sharingButtonEl = await driver.wait(until.elementLocated(By.css('a.post-sharing-button')), 10000);
+    } catch (e) {
+      retries -= 1;
+      if (retries === 0) {
+        console.log('Reddit page navigation failures exceeded maximum number of retries.');
+        const html = await driver.executeScript(`return document.body.innerHTML`);
+        console.log(html);
+        throw e;
+      }
+      console.log('Reddit page navigation failed. Refreshing...');
+      await driver.navigate().refresh();
+    }
+  }
+  const sharingButton = sharingButtonEl! as WebElement;
   await sharingButton.click();
 
   // Wait for the sharing option to appear and click it
@@ -27,33 +43,7 @@ describe('old.reddit.com', () => {
   test('should copy a rxddit URL to the clipboard when the reddit setting is rxddit', async () => {
     const driver = await buildFirefoxDriver();
     // open up extension options
-    await driver.get('about:addons');
-    const listItems = await driver.findElements(By.css('button[name="extension"]'));
-    await listItems[0].click();
-    await driver.executeScript(
-      `let optionsPanel = document.body.querySelectorAll('panel-item[action="preferences"]')[0];
-      optionsPanel.shadowRoot.querySelector('label').click();`
-    );
-    // switch to the options window
-    await driver.wait(async () => (await driver.getAllWindowHandles()).length > 1, 10000);
-    const originalWindow = await driver.getWindowHandle();
-    const windows = await driver.getAllWindowHandles();
-    for (const handle of windows) {
-      if (handle !== originalWindow) {
-        await driver.switchTo().window(handle);
-        break;
-      }
-    }
-    // switch the reddit setting to rxddit
-    await driver.wait(until.elementLocated(By.id('reddit')), 5000);
-    const redditDropdown = await driver.findElement(By.id('reddit'));
-    await driver.wait(until.elementIsVisible(redditDropdown), 5000);
-    await redditDropdown.click();
-    const redditSelect = new Select(redditDropdown);
-    await redditSelect.selectByVisibleText('rxddit');
-    // close the extension window and navigate to old.reddit.com
-    await driver.close();
-    await driver.switchTo().window(originalWindow);
+    await changeExtensionOptionSelect(driver, 'reddit', 'rxddit');
     await driver.getAndWait('https://old.reddit.com');
     const clipboardContent = await clickShareRedditPost(driver);
     expect(clipboardContent).toMatch(/^https:\/\/rxddit\.com\/r\/[^/]+\/comments\/[^/]+\/[^/]+\/$/);

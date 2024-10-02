@@ -1,6 +1,7 @@
 ﻿import { Options, ServiceBuilder } from 'selenium-webdriver/firefox';
-import { Builder, WebDriver } from 'selenium-webdriver';
+import { Builder, By, until, WebDriver } from 'selenium-webdriver';
 import { glob } from 'glob';
+import { Select } from 'selenium-webdriver/lib/select';
 
 export interface CustomWebDriver extends WebDriver {
   getAndWait(url: string): Promise<void>;
@@ -55,4 +56,44 @@ export function buildFirefoxDriver(): Promise<CustomWebDriver> {
   const serviceBuilder = new ServiceBuilder(process.env.GECKODRIVER_BINARY_PATH);
 
   return new Builder().forBrowser('firefox').setFirefoxOptions(options).setFirefoxService(serviceBuilder).build();
+}
+
+/**
+ * Opens the `about:addons` page, opens the Extension options, and changes the specified extension option if it's a select type
+ * @param driver - the WebDriver to use
+ * @param optionName the name of the select option
+ * @param optionValue the value to change the option to
+ */
+export async function changeExtensionOptionSelect(
+  driver: CustomWebDriver,
+  optionName: string,
+  optionValue: string
+): Promise<void> {
+  await driver.get('about:addons');
+  const listItems = await driver.findElements(By.css('button[name="extension"]'));
+  await listItems[0].click();
+  await driver.executeScript(
+    `let optionsPanel = document.body.querySelectorAll('panel-item[action="preferences"]')[0];
+      optionsPanel.shadowRoot.querySelector('label').click();`
+  );
+  // switch to the options window
+  await driver.wait(async () => (await driver.getAllWindowHandles()).length > 1, 10000);
+  const originalWindow = await driver.getWindowHandle();
+  const windows = await driver.getAllWindowHandles();
+  for (const handle of windows) {
+    if (handle !== originalWindow) {
+      await driver.switchTo().window(handle);
+      break;
+    }
+  }
+  // switch the reddit setting to rxddit
+  await driver.wait(until.elementLocated(By.id(optionName)), 5000);
+  const optionDropdown = await driver.findElement(By.id(optionName));
+  await driver.wait(until.elementIsVisible(optionDropdown), 5000);
+  await optionDropdown.click();
+  const optionSelect = new Select(optionDropdown);
+  await optionSelect.selectByVisibleText(optionValue);
+  // close the extension window and navigate to old.reddit.com
+  await driver.close();
+  await driver.switchTo().window(originalWindow);
 }
