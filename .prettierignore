@@ -5,3 +5,5 @@ dist/
 coverage/
 web-ext-artifacts/
 output/
+
+package-lock.json
