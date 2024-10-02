@@ -8,7 +8,40 @@ yarn-error.log*
 /.pnp
 .pnp.js
 
+# Build artifacts
 .vscode/*
 /dist
 /output
+/coverage
+
+# Individual files
 .env
+
+# Ignore compressed and archive files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.bz2
+*.tar.xz
+*.xz
+*.gz
+*.7z
+*.rar
+*.lz
+*.lzma
+*.z
+*.Z
+
+# Ignore Linux package files
+*.deb
+*.rpm
+*.pkg.tar.xz
+*.snap
+*.apk
+*.AppImage
+
+# Ignore other packaging formats
+*.iso
+*.dmg
