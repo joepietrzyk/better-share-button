@@ -2,24 +2,8 @@
 import { buildFirefoxDriver, changeExtensionOptionSelect } from './selenium-scripts';
 
 async function clickShareRedditPost(driver: WebDriver) {
-  // Wait for the sharing button to appear and click it
-  let retries = 3;
-  let sharingButtonEl: WebElement | null;
-  while (retries > 0) {
-    try {
-      sharingButtonEl = await driver.wait(until.elementLocated(By.css('a.post-sharing-button')), 3000);
-    } catch (e) {
-      retries -= 1;
-      if (retries === 0) {
-        console.log('Reddit page navigation failures exceeded maximum number of retries.');
-        const html = await driver.executeScript(`return document.body.innerHTML`);
-        console.log(html);
-        throw e;
-      }
-      console.log('Reddit page navigation failed. Refreshing...');
-      await driver.navigate().refresh();
-    }
-  }
+  await driver.wait(until.elementLocated(By.css('a.post-sharing-button')), 3000);
+  const sharingButtonEl = await driver.findElement(By.css('a.post-sharing-button'));
   const sharingButton = sharingButtonEl! as WebElement;
   await sharingButton.click();
 

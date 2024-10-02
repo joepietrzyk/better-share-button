@@ -11,7 +11,7 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "build": "webpack --mode production && web-ext build --overwrite-dest -s ./dist --artifacts-dir ./output",
-    "test": "jest --color",
+    "test": "jest --color --testPathIgnorePatterns=\"test/integration/reddit.test.ts\"",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration",
     "test:coverage": "jest --color --coverage",
