@@ -1,6 +1,9 @@
 ﻿name: CI Pipeline
 on:
   push:
+    branches:
+      - main
+      - develop
   pull_request:
     branches:
       - main
@@ -17,20 +20,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        env:
+          CI: true
+        run: |
+          npm i -g pnpm@9.12.0
+          pnpm i
 
       - name: Lint and format
         run: |
-          npm run lint
-          npm run format
+          pnpm lint
+          pnpm format
 
       - name: Install Firefox
         run: |
@@ -49,13 +56,13 @@ jobs:
           geckodriver --version
 
       - name: Build project
-        run: npm run build
+        run: pnpm build
 
       - name: Run tests
-        run: npm test -- --testPathIgnorePatterns="test/integration/reddit.test.ts" --color --coverage
+        run: pnpm test -- --testPathIgnorePatterns="test/integration/reddit.test.ts" --color --coverage
 
       - name: Upload code coverage report
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
