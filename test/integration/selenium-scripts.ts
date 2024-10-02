@@ -55,7 +55,7 @@ export function buildFirefoxDriver(): Promise<CustomWebDriver> {
   );
   options.setBinary(process.env.FIREFOX_BINARY_PATH);
   options.addExtensions(extensionPath);
-  options.addArguments('--headless');
+  //options.addArguments('--headless');
   const serviceBuilder = new ServiceBuilder(process.env.GECKODRIVER_BINARY_PATH);
 
   return new Builder().forBrowser('firefox').setFirefoxOptions(options).setFirefoxService(serviceBuilder).build();
