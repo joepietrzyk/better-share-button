@@ -15,10 +15,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-22.04
 
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -35,17 +31,12 @@ jobs:
         run: |
           npm run lint
           npm run format
-          git diff --exit-code || echo "Linting or formatting made changes."
 
-      - name: Push changes
-        if: ${{ success() }}
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -am "Bot: Correct formatting"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit changes (if any)
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'style: Auto-format code'
+          branch: ${{ github.head_ref }}
 
       - name: Install Firefox
         run: |
