@@ -15,6 +15,10 @@ jobs:
   build-and-test:
     runs-on: ubuntu-22.04
 
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -26,13 +30,13 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
+
       - name: Lint and format
-        run: | 
+        run: |
           npm run lint
           npm run format
           git diff --exit-code || echo "Linting or formatting made changes."
-          
+
       - name: Push changes
         if: ${{ success() }}
         run: |
@@ -41,7 +45,7 @@ jobs:
           git commit -am "Bot: Correct formatting"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Firefox
         run: |
