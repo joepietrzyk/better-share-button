@@ -1,6 +1,9 @@
 ﻿node_modules/
+.github/workflows/
 
 dist/
 coverage/
 web-ext-artifacts/
 output/
+
+package-lock.json
