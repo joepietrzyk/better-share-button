@@ -16,7 +16,7 @@ async function clickShareRedditPost(driver: WebDriver) {
 }
 
 describe('old.reddit.com', () => {
-  test('should default to vxreddit and should copy the vxreddit url to the clipboard', async () => {
+  it('should default to vxreddit and should copy the vxreddit url to the clipboard', async () => {
     const driver = await buildFirefoxDriver();
     await driver.getAndWait('https://old.reddit.com');
     const clipboardContent = await clickShareRedditPost(driver);
@@ -24,7 +24,7 @@ describe('old.reddit.com', () => {
     await driver.close();
   });
 
-  test('should copy a rxddit URL to the clipboard when the reddit setting is rxddit', async () => {
+  it('should copy a rxddit URL to the clipboard when the reddit setting is rxddit', async () => {
     const driver = await buildFirefoxDriver();
     // open up extension options
     await changeExtensionOptionSelect(driver, 'reddit', 'rxddit');

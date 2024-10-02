@@ -57,6 +57,26 @@ describe('createTweetObserver', () => {
     expect(actualDropdown!.tagName.toLowerCase()).toBe('div');
     expect(actualDropdown!.getAttribute('data-testid')).toBe('Dropdown');
   });
+
+  it('should invoke the onDropdownRemove callback when the Better Share Button is removed', async () => {
+    let hasFired = false;
+    const parent = document.createElement('div');
+    const div = document.createElement('div');
+    parent.appendChild(div);
+    div.setAttribute(BSB_SHARE_BUTTON_ATTRIBUTE, 'true');
+    document.body.appendChild(parent);
+    const observer = createTweetObserver(
+      () => {},
+      () => {},
+      () => {
+        hasFired = true;
+      }
+    );
+    observer.observe(document.body, { childList: true, subtree: true });
+    parent.remove();
+    await resolveOnNextFrame();
+    expect(hasFired).toBe(true);
+  });
 });
 
 describe('shareButtonClick', () => {
