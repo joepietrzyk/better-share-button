@@ -50,6 +50,9 @@ export function buildFirefoxDriver(): Promise<CustomWebDriver> {
   const options = new Options();
   options.setPreference('xpinstall.signatures.required', false);
   options.setPreference('xpinstall.whitelist.required', false);
+  options.addArguments(
+    '-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+  );
   options.setBinary(process.env.FIREFOX_BINARY_PATH);
   options.addExtensions(extensionPath);
   options.addArguments('--headless');

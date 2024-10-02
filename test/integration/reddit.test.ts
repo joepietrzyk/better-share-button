@@ -1,5 +1,5 @@
 ﻿import { By, until, WebDriver, WebElement } from 'selenium-webdriver';
-import { buildFirefoxDriver, changeExtensionOptionSelect, CustomWebDriver } from './selenium-scripts';
+import { buildFirefoxDriver, changeExtensionOptionSelect } from './selenium-scripts';
 
 async function clickShareRedditPost(driver: WebDriver) {
   // Wait for the sharing button to appear and click it
@@ -7,7 +7,7 @@ async function clickShareRedditPost(driver: WebDriver) {
   let sharingButtonEl: WebElement | null;
   while (retries > 0) {
     try {
-      sharingButtonEl = await driver.wait(until.elementLocated(By.css('a.post-sharing-button')), 10000);
+      sharingButtonEl = await driver.wait(until.elementLocated(By.css('a.post-sharing-button')), 3000);
     } catch (e) {
       retries -= 1;
       if (retries === 0) {
@@ -24,7 +24,7 @@ async function clickShareRedditPost(driver: WebDriver) {
   await sharingButton.click();
 
   // Wait for the sharing option to appear and click it
-  const sharingOption = await driver.wait(until.elementLocated(By.css('div.bsb-post-sharing-option')), 10000);
+  const sharingOption = await driver.wait(until.elementLocated(By.css('div.bsb-post-sharing-option')), 3000);
   await sharingOption.click();
 
   // Perform clipboard check
