@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/github/license/joepietrzyk/better-share-button)](./LICENSE)
 [![Version](https://img.shields.io/github/package-json/v/joepietrzyk/better-share-button)](./package.json)
+[![codecov](https://codecov.io/github/joepietrzyk/better-share-button/graph/badge.svg?token=MN3ZFJDRXB)](https://codecov.io/github/joepietrzyk/better-share-button)
 
 ## Overview
 
