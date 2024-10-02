@@ -13,12 +13,17 @@
   ],
   "options_ui": {
     "page": "options.html",
-    "open_in_tab": false
+    "open_in_tab": true
   },
   "permissions": ["storage"],
   "browser_action": {
     "default_icon": "assets/icon.png",
     "default_title": "Browse Time",
     "default_popup": "view.html"
+  },
+  "applications": {
+    "gecko": {
+      "id": "better-share-button@github.com"
+    }
   }
 }

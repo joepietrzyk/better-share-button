@@ -3,3 +3,4 @@
 dist/
 coverage/
 web-ext-artifacts/
+output/

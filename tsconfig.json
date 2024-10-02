@@ -5,9 +5,10 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "types": ["firefox-webext-browser", "vitest/globals"],
-    "allowSyntheticDefaultImports": true
+    "types": ["firefox-webext-browser"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*.ts", "global.d.ts"],
-  "exclude": ["node_modules", "test", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "exclude": ["./node_modules", "test", "src/**/*.spec.ts", "src/**/*.test.ts", "test/unit/test-helpers.ts"]
 }
