@@ -5,6 +5,7 @@ dist/
 coverage/
 web-ext-artifacts/
 output/
+**/assets/
 
 package-lock.json
 pnpm-lock.yaml

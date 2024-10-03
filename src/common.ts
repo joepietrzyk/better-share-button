@@ -1,4 +1,6 @@
 ﻿import Toastify from 'toastify-js';
+import icon from '../assets/icon.svg';
+import circularIcon from '../assets/circular-icon.svg';
 
 /**
  * Determines if a Node is an Element
@@ -55,4 +57,43 @@ export function clipboardToast(x: number, y: number): void {
       document.body.appendChild(lastToast);
     }
   }
+}
+
+const iconDiv = document.createElement('div');
+// eslint-disable-next-line no-unsanitized/property
+iconDiv.innerHTML = icon;
+
+const svgIcon = iconDiv.children[0]! as SVGElement;
+
+/**
+ * Gets the icon SVG and returns it as a `SVGElement`
+ * @returns the icon SVG
+ */
+export function getSVGIcon(): SVGElement {
+  return svgIcon.cloneNode(true) as SVGElement;
+}
+
+/**
+ * Gets the icon SVG and gives us the dark mode version
+ * @returns the dark mode SVG icon
+ */
+export function getSVGIconDark(): SVGElement {
+  const darkSVG = svgIcon.cloneNode(true) as SVGElement;
+  [...darkSVG.children].forEach(child => {
+    child.setAttribute('stroke', 'white');
+  });
+  return darkSVG;
+}
+
+/**
+ * Gets a circular icon
+ * @returns an SVG icon with a circular button
+ */
+export function getRedditIcon(): SVGElement {
+  const div = document.createElement('div');
+  // eslint-disable-next-line no-unsanitized/property
+  div.innerHTML = circularIcon;
+  const redditIcon = div.children[0] as SVGElement;
+  redditIcon.setAttribute('viewBox', '0 0 200 200');
+  return redditIcon;
 }

@@ -14,6 +14,7 @@
       testPathIgnorePatterns: ['/node_modules/', '/tests/integration/'],
       moduleNameMapper: {
         '\\.(css|less|scss|sass)$': '<rootDir>/__mocks__/style-mock.js',
+        '\\.svg$': '<rootDir>/__mocks__/svg-mock.js',
       },
       transform: {
         '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'test/unit/tsconfig.json' }],

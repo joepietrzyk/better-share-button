@@ -51,6 +51,7 @@
     "prettier": "^3.3.3",
     "selenium-webdriver": "^4.25.0",
     "style-loader": "^4.0.0",
+    "svg-inline-loader": "^0.8.2",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",

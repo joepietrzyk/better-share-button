@@ -1,4 +1,4 @@
-﻿import { clipboardToast, isBrowser, isElement } from '../common';
+﻿import { clipboardToast, getRedditIcon, isBrowser, isElement } from '../common';
 import { loadPreferences, RedditPreference } from '../settings';
 import './reddit-styles.css';
 
@@ -120,6 +120,7 @@ export function addShareButton(
   // create the button tooltip programmatically
   const shareButtonDiv = document.createElement('div');
   shareButtonDiv.className = 'bsb-post-sharing-option';
+  shareButtonDiv.appendChild(getRedditIcon());
   let parent = shareButtonDiv;
   let el = document.createElement('div');
   el.classList.add('bsb-c-tooltip');
