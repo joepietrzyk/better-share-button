@@ -100,7 +100,7 @@ export async function shareButtonClick(event: MouseEvent, link: string, dropdown
  * @returns The extracted link from the article.
  */
 export function getLinkFromArticle(article: Element): string {
-  const linkFormat = /\/[a-zA-Z0-9\W]+\/status\/\d+$/;
+  const linkFormat = /\/[^/]+\/status\/\d+$/;
   let link = '';
   const links = [...article.querySelectorAll('a[href][dir="ltr"]')].filter(a => {
     const href = a.getAttribute('href');
