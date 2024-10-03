@@ -1,5 +1,6 @@
 ﻿import Toastify from 'toastify-js';
 import icon from '../assets/icon.svg';
+import circularIcon from '../assets/circular-icon.svg';
 
 /**
  * Determines if a Node is an Element
@@ -82,4 +83,17 @@ export function getSVGIconDark(): SVGElement {
     child.setAttribute('stroke', 'white');
   });
   return darkSVG;
+}
+
+/**
+ * Gets a circular icon
+ * @returns an SVG icon with a circular button
+ */
+export function getRedditIcon(): SVGElement {
+  const div = document.createElement('div');
+  // eslint-disable-next-line no-unsanitized/property
+  div.innerHTML = circularIcon;
+  const redditIcon = div.children[0] as SVGElement;
+  redditIcon.setAttribute('viewBox', '0 0 200 200');
+  return redditIcon;
 }
