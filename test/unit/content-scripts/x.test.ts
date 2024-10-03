@@ -36,8 +36,7 @@ describe('main', () => {
 
   function addShareMenu() {
     const div = document.createElement('div');
-    div.innerHTML = `
-    <div data-testid="Dropdown"></div>`;
+    div.innerHTML = `<div data-testid="Dropdown"></div>`;
     document.body.appendChild(div);
     return resolveOnNextFrame();
   }

@@ -1,10 +1,10 @@
 ﻿import { clipboardToast, isBrowser, isElement } from '../common';
-import { loadPreferences, RedditPreference, UserPreferences } from '../settings';
+import { loadPreferences, RedditPreference } from '../settings';
 import './reddit-styles.css';
 
 // Run the main logic only when the script is executed directly
 if (isBrowser()) {
-  loadPreferences().then(preferences => main(preferences));
+  main();
 }
 
 /**
@@ -53,20 +53,20 @@ export function isNewOrOldReddit(): RedditVersion {
 /**
  * Main entry point functionality to execute once preferences are loaded.
  * Determines if the current page is using old or new Reddit and attaches the necessary observers.
- * @param preferences - The user's preferences for share button behavior.
  */
-function main(preferences: UserPreferences): void {
+export function main(): void {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isNewReddit, isOldReddit } = isNewOrOldReddit();
 
   if (isOldReddit) {
     const appBody = getAppBody();
     const observer = createEmbedButtonObserver(embedButton => {
-      addShareButton(embedButton, 'right', event => {
+      addShareButton(embedButton, 'right', async event => {
         let url = getPostURL();
+        const preferences = await loadPreferences();
         url = convertToShareableURL(url, preferences.reddit);
 
-        shareButtonClick(event, url).then();
+        await shareButtonClick(event, url);
       });
     });
     observer.observe(appBody, { childList: true, subtree: true });
