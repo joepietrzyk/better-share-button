@@ -11,6 +11,9 @@ import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as common from '../../../src/common';
 import { resolveOnNextFrame } from '../test-helpers';
+import { main } from '../../../src/content-scripts/reddit';
+import { defaultPreferences } from '../../../src/settings';
+import * as settings from '../../../src/settings';
 
 function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
   // Mock the global location object
@@ -25,6 +28,50 @@ function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
     writable: true, // Make sure the mock can be updated during tests
   });
 }
+
+describe('main', () => {
+  function addSharingMenu() {
+    const div = document.createElement('div');
+    div.innerHTML = `
+        <div class="post-sharing-option-embed">
+        <input class="post-sharing-link-input" value="https://reddit.com/r/test/1/this_is_a_test/?ref=share&ref_source=link">
+        </div>`;
+    document.body.appendChild(div);
+    return resolveOnNextFrame();
+  }
+  beforeEach(() => {
+    document.body.innerHTML = '<body></body>';
+  });
+
+  it('should add the Better Share button when the menu appears', async () => {
+    main();
+    await addSharingMenu();
+    const bsb = document.body.querySelector('.bsb-post-sharing-option');
+    expect(bsb).not.toBeNull();
+  });
+
+  it('should copy the URL to the clipboard when the Better Share Button is clicked', async () => {
+    let clipboardText = '';
+    const preferences = defaultPreferences();
+    const loadPreferencesSpy = jest.spyOn(settings, 'loadPreferences').mockReturnValue(Promise.resolve(preferences));
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: jest.fn((text: string) => {
+          clipboardText = text;
+          return Promise.resolve();
+        }),
+      },
+      writable: true, // Allow overwriting if needed
+    });
+    main();
+    await addSharingMenu();
+    const bsb = document.body.querySelector('.bsb-post-sharing-option') as HTMLDivElement;
+    bsb.click();
+    await resolveOnNextFrame();
+    expect(clipboardText).toContain('/r/test/1/this_is_a_test');
+    loadPreferencesSpy.mockRestore();
+  });
+});
 
 describe('isNewOrOldReddit', () => {
   it('should recognize the window URL as new.reddit.com', () => {

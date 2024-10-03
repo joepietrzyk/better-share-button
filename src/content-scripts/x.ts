@@ -1,4 +1,4 @@
-import { loadPreferences, UserPreferences, XPreference } from '../settings';
+import { loadPreferences, XPreference } from '../settings';
 import { clipboardToast, isBrowser, isElement } from '../common';
 
 // the CSS class used by dropdown menu items when hovered
@@ -7,15 +7,14 @@ export const MENU_HOVER_CLASS = 'r-1cuuowz';
 export const BSB_SHARE_BUTTON_ATTRIBUTE = 'bsb-share-button';
 
 if (isBrowser()) {
-  loadPreferences().then(preferences => main(preferences));
+  main();
 }
 
 /**
  * Main entry point functionality to execute once preferences are loaded.
  * Sets up a MutationObserver on the main element to detect when the DOM is ready.
- * @param preferences - The user's preferences for share button behavior.
  */
-function main(preferences: UserPreferences) {
+export function main() {
   let link = '';
   const observer = createTweetObserver(
     article => {
@@ -27,7 +26,8 @@ function main(preferences: UserPreferences) {
     dropdown => {
       if (link !== '') {
         const bsb = createShareButton();
-        (bsb as HTMLDivElement).addEventListener('click', event => {
+        (bsb as HTMLDivElement).addEventListener('click', async event => {
+          const preferences = await loadPreferences();
           const convertedLink = convertXLink(link, preferences.x);
           shareButtonClick(event, convertedLink, dropdown).then();
         });
@@ -100,7 +100,7 @@ export async function shareButtonClick(event: MouseEvent, link: string, dropdown
  * @returns The extracted link from the article.
  */
 export function getLinkFromArticle(article: Element): string {
-  const linkFormat = /\/[a-zA-Z0-9\W]+\/status\/\d+$/;
+  const linkFormat = /\/[^/]+\/status\/\d+$/;
   let link = '';
   const links = [...article.querySelectorAll('a[href][dir="ltr"]')].filter(a => {
     const href = a.getAttribute('href');

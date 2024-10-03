@@ -14,7 +14,7 @@
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration",
-    "test:coverage": "jest --color --coverage",
+    "test:coverage": "jest --color --coverage --selectProjects unit",
     "test:watch": "jest --watch",
     "format-workflow": "prettier --write .github/workflows/**/* --ignore-path /dev/null",
     "clean": "rm -rf output dist"
