@@ -1,5 +1,5 @@
 import { loadPreferences, XPreference } from '../settings';
-import { clipboardToast, isBrowser, isElement } from '../common';
+import { clipboardToast, getSVGIconDark, isBrowser, isElement } from '../common';
 
 // the CSS class used by dropdown menu items when hovered
 export const MENU_HOVER_CLASS = 'r-1cuuowz';
@@ -133,21 +133,10 @@ export function createShareButton(): Element {
   menuItemDiv.setAttribute('bsb-share-button', 'true');
   const firstInnerDiv = document.createElement('div');
   firstInnerDiv.setAttribute('class', 'css-175oi2r r-1777fci r-faml9v');
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 24 24');
+  const svg = getSVGIconDark();
+  svg.setAttribute('viewBox', '0 0 145 145');
   svg.setAttribute('aria-hidden', 'true');
   svg.setAttribute('class', 'r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-lrvibr r-m6rgpd r-1nao33i r-1q142lx');
-  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  p.setAttribute(
-    'd',
-    'M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 ' +
-      '0 2.73 2.74 2.73 7.17 0 9.9l-1.42 1.42-1.41-1.42 1.41-1.41c1.96-1.96 1.96-5.12 0-7.07zm-2.12 3.53l-7.07 ' +
-      '7.07-1.41-1.41 7.07-7.07 1.41 1.41zm-12.02.71l1.42-1.42 1.41 1.42-1.41 1.41c-1.96 1.96-1.96 5.12 0 7.07 1.95 ' +
-      '1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z'
-  );
-  g.appendChild(p);
-  svg.appendChild(g);
   firstInnerDiv.appendChild(svg);
   const secondInnerDiv = document.createElement('div');
   secondInnerDiv.setAttribute('class', 'css-175oi2r r-16y2uox r-1wbh5a2');
