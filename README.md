@@ -35,7 +35,7 @@ Right now this is a solo project. However, if you do wish to contribute, please 
 
 1. Fork the repository.
 2. Commit all changes to a new branch (`git checkout -b feature/my-feature`).
-3. Ensure proper styling is enforced (`pnpm lint` and `pnpm lint`).
+3. Ensure proper styling is enforced (`pnpm lint` and `pnpm format`).
 4. Make sure all the unit tests pass (`pnpm test`). Add or modify any unit tests necessary for your changes.
 5. Open a Pull Request.
 
