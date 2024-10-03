@@ -4,6 +4,6 @@
     "moduleResolution": "node",
     "types": ["firefox-webext-browser", "jest", "node"]
   },
-  "include": ["**/*.ts", "../../global.d.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["../../node_modules"]
 }

@@ -7,15 +7,78 @@
   findShareButton,
   getDropdown,
   getLinkFromArticle,
+  main,
   MENU_HOVER_CLASS,
   shareButtonClick,
 } from '../../../src/content-scripts/x';
 import { resolveOnNextFrame, stubClipboard } from '../test-helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { defaultPreferences, XPreference } from '../../../src/settings';
+import * as settings from '../../../src/settings';
 
 const dropdownPath = path.resolve(__dirname, 'dropdown.html');
 const dropdownHTML = fs.readFileSync(dropdownPath, 'utf8');
+
+describe('main', () => {
+  function addArticle() {
+    const div = document.createElement('div');
+    div.innerHTML = `
+        <article>
+        <a href="/test/status/1" dir="ltr"></a>
+        <button id="share-button">
+            <svg></svg>
+        </button>
+        </article>`;
+    document.body.appendChild(div);
+    return resolveOnNextFrame();
+  }
+
+  function addShareMenu() {
+    const div = document.createElement('div');
+    div.innerHTML = `
+    <div data-testid="Dropdown"></div>`;
+    document.body.appendChild(div);
+    return resolveOnNextFrame();
+  }
+
+  beforeEach(() => {
+    document.body.innerHTML = '<body></body>';
+  });
+
+  it('should add the Better Share Button when the share menu appears', async () => {
+    main();
+    await addArticle();
+    (document.querySelector('#share-button') as HTMLDivElement).click();
+    await addShareMenu();
+    const actualBsb = document.body.querySelector(`[${BSB_SHARE_BUTTON_ATTRIBUTE}]`);
+    expect(actualBsb).not.toBeNull();
+  });
+
+  it('should copy the URL to the clipboard when the Better Share Button is clicked', async () => {
+    let clipboardText = '';
+    const preferences = defaultPreferences();
+    const loadPreferencesSpy = jest.spyOn(settings, 'loadPreferences').mockReturnValue(Promise.resolve(preferences));
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: jest.fn((text: string) => {
+          clipboardText = text;
+          return Promise.resolve();
+        }),
+      },
+      writable: true, // Allow overwriting if needed
+    });
+    main();
+    await addArticle();
+    (document.querySelector('#share-button') as HTMLDivElement).click();
+    await addShareMenu();
+    const actualBsb = document.body.querySelector(`[${BSB_SHARE_BUTTON_ATTRIBUTE}]`) as HTMLDivElement;
+    actualBsb.click();
+    await resolveOnNextFrame();
+    loadPreferencesSpy.mockRestore();
+    expect(clipboardText).toContain('/test/status/1');
+  });
+});
 
 describe('createTweetObserver', () => {
   beforeEach(() => {
@@ -289,5 +352,10 @@ describe('convertXLink', () => {
   it("should use the hostname vxtwitter.com when the preference is 'vxtwitter'", () => {
     const actualXLink = convertXLink(testXInput, 'vxtwitter');
     expect(actualXLink).toBe('https://vxtwitter.com' + testHref);
+  });
+
+  it('should return the regular URL when the preference is invalid', () => {
+    const actualXLink = convertXLink(testXInput, 'fasdfd' as never as XPreference);
+    expect(actualXLink).toBe(testXInput);
   });
 });

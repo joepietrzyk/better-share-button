@@ -57,7 +57,7 @@ function isPreferencesCurrentVersion(preferences: any): preferences is UserPrefe
  * Creates a new preferences object with default values.
  * @returns A new `UserPreferences` object with default settings.
  */
-function defaultPreferences(): UserPreferences {
+export function defaultPreferences(): UserPreferences {
   return {
     version: '1',
     reddit: 'vxreddit',
