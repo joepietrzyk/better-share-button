@@ -66,12 +66,39 @@ export function defaultPreferences(): UserPreferences {
   };
 }
 
+type preferenceUpdateListener = (newPref: UserPreferences) => void;
+const preferenceUpdates: preferenceUpdateListener[] = [];
+
 let preferences: UserPreferences | null = null;
 browser.storage.local.onChanged.addListener(event => {
   if (event.preferences && event.preferences.newValue && isPreferencesCurrentVersion(event.preferences.newValue)) {
     preferences = event.preferences.newValue;
+    preferenceUpdates.forEach(preferenceUpdate => preferenceUpdate(preferences!));
   }
 });
+
+/**
+ * Listens for preference updates
+ * @param listener - listener for receiving preference updates
+ */
+export function onPreferenceUpdate(listener: preferenceUpdateListener) {
+  preferenceUpdates.push(listener);
+}
+
+/**
+ * Stops listening to preference updates
+ * @param listener - the listener to remove
+ */
+export function removePreferenceUpdateListener(listener: preferenceUpdateListener) {
+  for (let i = 0; i < preferenceUpdates.length; i++) {
+    // eslint-disable-next-line security/detect-object-injection
+    if (preferenceUpdates[i] === listener) {
+      if (i >= 0 && i < preferenceUpdates.length) {
+        preferenceUpdates.splice(i, 1);
+      }
+    }
+  }
+}
 
 /**
  * Loads the user's preferences from local storage.

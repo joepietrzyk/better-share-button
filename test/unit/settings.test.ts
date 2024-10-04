@@ -1,6 +1,49 @@
 ﻿import type { UserPreferences } from '../../src/settings';
 import { mockBrowserLocalStorage, storageListener } from './test-helpers';
 
+describe('onPreferenceUpdate', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  it('should invoke the listener when the preferences are updated', async () => {
+    const listeners: storageListener[] = [];
+    mockBrowserLocalStorage({}, pref => (expectedSettings = pref.preferences), listeners);
+    const settings = await import('../../src/settings');
+    let actualSettings: UserPreferences | null = null;
+    let expectedSettings = settings.defaultPreferences();
+    settings.onPreferenceUpdate(pref => {
+      actualSettings = pref;
+    });
+    expectedSettings.x = 'twittpr';
+    listeners[0]!({ preferences: { newValue: expectedSettings } });
+    expect(actualSettings).not.toBeNull();
+    expect(actualSettings!.x).toEqual(expectedSettings.x);
+  });
+});
+
+describe('removePreferenceUpdateListener', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  it('should not invoke the listener when preferences are updated', async () => {
+    const listeners: storageListener[] = [];
+    mockBrowserLocalStorage({}, pref => (expectedSettings = pref.preferences), listeners);
+    const settings = await import('../../src/settings');
+    let actualSettings: UserPreferences | null = null;
+    let expectedSettings = settings.defaultPreferences();
+    const listener = (pref: UserPreferences) => {
+      actualSettings = pref;
+    };
+    settings.onPreferenceUpdate(listener);
+    settings.removePreferenceUpdateListener(listener);
+    expectedSettings.x = 'twittpr';
+    listeners[0]!({ preferences: { newValue: expectedSettings } });
+    expect(actualSettings).toBeNull();
+  });
+});
+
 describe('defaultPreferences', () => {
   beforeEach(() => {
     jest.resetModules();
