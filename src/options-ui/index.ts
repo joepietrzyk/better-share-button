@@ -16,14 +16,14 @@ function main(preferences: UserPreferences) {
   if (redditEl && redditEl instanceof HTMLSelectElement) {
     redditEl.addEventListener('change', async () => {
       preferences.reddit = redditEl.value as RedditPreference;
-      await savePreferences();
+      await savePreferences(preferences);
     });
   }
   const xEl = document.body.querySelector('#x');
   if (xEl && xEl instanceof HTMLSelectElement) {
     xEl.addEventListener('change', async () => {
       preferences.x = xEl.value as XPreference;
-      await savePreferences();
+      await savePreferences(preferences);
     });
   }
 

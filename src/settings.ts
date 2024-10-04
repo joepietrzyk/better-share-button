@@ -1,4 +1,6 @@
-﻿export type RedditPreference = 'rxddit' | 'vxreddit';
+﻿import { Key } from 'selenium-webdriver';
+
+export type RedditPreference = 'rxddit' | 'vxreddit';
 export type XPreference = 'fixupx' | 'fxtwitter' | 'twittpr' | 'vxtwitter';
 export type InstagramPreference = 'ddinstagram';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -77,22 +79,26 @@ export async function loadPreferences(): Promise<UserPreferences> {
   if (preferences) return preferences;
   const results = await browser.storage.local.get('preferences');
   if (results.preferences) {
-    preferences = results.preferences;
-    if (isPreferencesCurrentVersion(preferences)) {
-      return preferences;
-    }
+    const preferences = results.preferences;
+    if (preferences && isPreferencesCurrentVersion(preferences)) return preferences;
+  } else {
+    preferences = defaultPreferences();
+    await savePreferences(preferences);
   }
-  preferences = defaultPreferences();
-  await savePreferences();
-  return preferences;
+  window.addEventListener('storage', (event: StorageEvent) => {
+    if (event.key === 'preferences') {
+      if (isPreferencesCurrentVersion(event.newValue)) preferences = event.newValue;
+    }
+  });
+  return preferences as UserPreferences;
 }
 
 /**
  * Saves the current preferences to local storage.
  * If preferences are not set, the function does nothing.
+ * @param preferences the preferences to save
  * @returns A `Promise` that resolves when the preferences are saved.
  */
-export async function savePreferences(): Promise<void> {
-  if (!preferences) return;
+export async function savePreferences(preferences: BSBPreferences): Promise<void> {
   await browser.storage.local.set({ preferences });
 }

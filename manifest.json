@@ -15,11 +15,10 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage"],
   "browser_action": {
-    "default_icon": "assets/icon.svg",
-    "default_title": "Browse Time",
-    "default_popup": "view.html"
+    "default_icon": "assets/circular-icon.svg",
+    "default_popup": "options.html"
   },
   "applications": {
     "gecko": {
