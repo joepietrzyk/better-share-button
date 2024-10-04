@@ -66,7 +66,39 @@ export function defaultPreferences(): UserPreferences {
   };
 }
 
+type preferenceUpdateListener = (newPref: UserPreferences) => void;
+const preferenceUpdates: preferenceUpdateListener[] = [];
+
 let preferences: UserPreferences | null = null;
+browser.storage.local.onChanged.addListener(event => {
+  if (event.preferences && event.preferences.newValue && isPreferencesCurrentVersion(event.preferences.newValue)) {
+    preferences = event.preferences.newValue;
+    preferenceUpdates.forEach(preferenceUpdate => preferenceUpdate(preferences!));
+  }
+});
+
+/**
+ * Listens for preference updates
+ * @param listener - listener for receiving preference updates
+ */
+export function onPreferenceUpdate(listener: preferenceUpdateListener) {
+  preferenceUpdates.push(listener);
+}
+
+/**
+ * Stops listening to preference updates
+ * @param listener - the listener to remove
+ */
+export function removePreferenceUpdateListener(listener: preferenceUpdateListener) {
+  for (let i = 0; i < preferenceUpdates.length; i++) {
+    // eslint-disable-next-line security/detect-object-injection
+    if (preferenceUpdates[i] === listener) {
+      if (i >= 0 && i < preferenceUpdates.length) {
+        preferenceUpdates.splice(i, 1);
+      }
+    }
+  }
+}
 
 /**
  * Loads the user's preferences from local storage.
@@ -77,22 +109,25 @@ export async function loadPreferences(): Promise<UserPreferences> {
   if (preferences) return preferences;
   const results = await browser.storage.local.get('preferences');
   if (results.preferences) {
-    preferences = results.preferences;
-    if (isPreferencesCurrentVersion(preferences)) {
-      return preferences;
+    const newPreferences = results.preferences;
+    if (newPreferences && isPreferencesCurrentVersion(newPreferences)) {
+      preferences = newPreferences;
+      return newPreferences;
     }
+    preferences = defaultPreferences();
+  } else {
+    preferences = defaultPreferences();
+    await savePreferences(preferences);
   }
-  preferences = defaultPreferences();
-  await savePreferences();
-  return preferences;
+  return preferences as UserPreferences;
 }
 
 /**
  * Saves the current preferences to local storage.
  * If preferences are not set, the function does nothing.
+ * @param preferences the preferences to save
  * @returns A `Promise` that resolves when the preferences are saved.
  */
-export async function savePreferences(): Promise<void> {
-  if (!preferences) return;
+export async function savePreferences(preferences: UserPreferences): Promise<void> {
   await browser.storage.local.set({ preferences });
 }

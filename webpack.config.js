@@ -14,7 +14,6 @@ export default (env, argv) => ({
     reddit: './content-scripts/reddit.ts',
     x: './content-scripts/x.ts',
     options: './options-ui/index.ts',
-    popup: './popup/index.ts',
   },
   output: {
     filename: '[name].bundle.js',
