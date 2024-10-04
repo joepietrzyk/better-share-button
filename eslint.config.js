@@ -21,10 +21,11 @@ export default [
     rules: {},
   },
   {
-    files: ['**/*.test.ts', '**/*.spec.ts'],
+    files: ['test/**/*.ts'],
     rules: {
       'jsdoc/require-jsdoc': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/ban-ts-comment': 'off',
       'security/detect-non-literal-fs-filename': 'off',
       'no-unsanitized/property': 'off',
       'no-unused-labels': 'off',

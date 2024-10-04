@@ -12,6 +12,7 @@
       testEnvironment: 'jsdom',
       testMatch: ['**/test/unit/**/?(*.)+(test).[tj]s?(x)'],
       testPathIgnorePatterns: ['/node_modules/', '/tests/integration/'],
+      setupFilesAfterEnv: ['<rootDir>/test/unit/jest.setup.ts'],
       moduleNameMapper: {
         '\\.(css|less|scss|sass)$': '<rootDir>/__mocks__/style-mock.js',
         '\\.svg$': '<rootDir>/__mocks__/svg-mock.js',

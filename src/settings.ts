@@ -1,6 +1,4 @@
-﻿import { Key } from 'selenium-webdriver';
-
-export type RedditPreference = 'rxddit' | 'vxreddit';
+﻿export type RedditPreference = 'rxddit' | 'vxreddit';
 export type XPreference = 'fixupx' | 'fxtwitter' | 'twittpr' | 'vxtwitter';
 export type InstagramPreference = 'ddinstagram';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -69,6 +67,11 @@ export function defaultPreferences(): UserPreferences {
 }
 
 let preferences: UserPreferences | null = null;
+browser.storage.local.onChanged.addListener(event => {
+  if (event.preferences && event.preferences.newValue && isPreferencesCurrentVersion(event.preferences.newValue)) {
+    preferences = event.preferences.newValue;
+  }
+});
 
 /**
  * Loads the user's preferences from local storage.
@@ -79,17 +82,16 @@ export async function loadPreferences(): Promise<UserPreferences> {
   if (preferences) return preferences;
   const results = await browser.storage.local.get('preferences');
   if (results.preferences) {
-    const preferences = results.preferences;
-    if (preferences && isPreferencesCurrentVersion(preferences)) return preferences;
+    const newPreferences = results.preferences;
+    if (newPreferences && isPreferencesCurrentVersion(newPreferences)) {
+      preferences = newPreferences;
+      return newPreferences;
+    }
+    preferences = defaultPreferences();
   } else {
     preferences = defaultPreferences();
     await savePreferences(preferences);
   }
-  window.addEventListener('storage', (event: StorageEvent) => {
-    if (event.key === 'preferences') {
-      if (isPreferencesCurrentVersion(event.newValue)) preferences = event.newValue;
-    }
-  });
   return preferences as UserPreferences;
 }
 
@@ -99,6 +101,6 @@ export async function loadPreferences(): Promise<UserPreferences> {
  * @param preferences the preferences to save
  * @returns A `Promise` that resolves when the preferences are saved.
  */
-export async function savePreferences(preferences: BSBPreferences): Promise<void> {
+export async function savePreferences(preferences: UserPreferences): Promise<void> {
   await browser.storage.local.set({ preferences });
 }
