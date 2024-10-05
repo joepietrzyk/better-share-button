@@ -6,14 +6,14 @@ import {
   getPostURL,
   isNewOrOldReddit,
   shareButtonClick,
-} from '../../../src/content-scripts/reddit';
+} from './reddit';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
-import * as common from '../../../src/common';
-import { resolveOnNextFrame } from '../test-helpers';
-import { main } from '../../../src/content-scripts/reddit';
-import { defaultPreferences } from '../../../src/settings';
-import * as settings from '../../../src/settings';
+import * as common from '../common';
+import { resolveOnNextFrame } from '../__test__/test-helpers';
+import { main } from './reddit';
+import { defaultPreferences } from '../settings';
+import * as settings from '../settings';
 
 function mockRedditURL(newOrOld = '', pathname = '/r/funny') {
   // Mock the global location object
@@ -232,7 +232,7 @@ describe('convertToShareableURL', () => {
 });
 
 describe('getPostURL', () => {
-  const filePath = path.resolve(__dirname, 'post-sharing.html');
+  const filePath = path.resolve(__dirname, '__test__/post-sharing.html');
   const html = fs.readFileSync(filePath, 'utf8');
   const TEST_URL = 'https://reddit.com/r/test/comments/1111111/test/?ref=share&amp;ref_source=link';
   const STRIPPED_URL = 'https://reddit.com/r/test/comments/1111111/test/';
@@ -309,7 +309,7 @@ describe('shareButtonClick', () => {
       },
       writable: true,
     });
-    jest.mock('../../../src/common', () => ({
+    jest.mock('../common', () => ({
       clipboardToast: jest.fn(),
     }));
     const expected = 'url';

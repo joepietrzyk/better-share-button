@@ -10,14 +10,14 @@
   main,
   MENU_HOVER_CLASS,
   shareButtonClick,
-} from '../../../src/content-scripts/x';
-import { resolveOnNextFrame, stubClipboard } from '../test-helpers';
+} from './x';
+import { resolveOnNextFrame, stubClipboard } from '../__test__/test-helpers';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { defaultPreferences, XPreference } from '../../../src/settings';
-import * as settings from '../../../src/settings';
+import { defaultPreferences, XPreference } from '../settings';
+import * as settings from '../settings';
 
-const dropdownPath = path.resolve(__dirname, 'dropdown.html');
+const dropdownPath = path.resolve(__dirname, '__test__/dropdown.html');
 const dropdownHTML = fs.readFileSync(dropdownPath, 'utf8');
 
 describe('main', () => {

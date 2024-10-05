@@ -59,7 +59,7 @@ jobs:
         run: pnpm build
 
       - name: Run tests
-        run: pnpm test -- --testPathIgnorePatterns="test/integration/reddit.test.ts" --color --coverage
+        run: pnpm test -- --testPathIgnorePatterns="e2e/reddit.test.ts" --coverage --color
 
       - name: Upload code coverage report
         uses: codecov/codecov-action@v4

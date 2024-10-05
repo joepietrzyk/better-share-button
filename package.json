@@ -13,7 +13,7 @@
     "build": "webpack --mode production && web-ext build --overwrite-dest -s ./dist --artifacts-dir ./output",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
-    "test:integration": "jest --selectProjects integration",
+    "test:e2e": "jest --selectProjects e2e",
     "test:coverage": "jest --color --coverage --selectProjects unit",
     "test:watch": "jest --watch",
     "format-workflow": "prettier --write .github/workflows/**/* --ignore-path /dev/null",
