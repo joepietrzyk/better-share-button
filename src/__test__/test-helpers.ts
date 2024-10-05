@@ -1,4 +1,4 @@
-﻿import type { UserPreferences } from '../../src/settings';
+﻿import type { UserPreferences } from '../settings';
 
 /**
  * Returns a `Promise` that resolves on the next frame
