@@ -26,7 +26,7 @@
       extensionsToTreatAsEsm: ['.ts'],
       setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts'],
       transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'e2e/tsconfig.json' }],
+        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.e2e.json' }],
       },
     },
   ],

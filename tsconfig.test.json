@@ -1,5 +1,5 @@
 ﻿{
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.ext.json",
   "compilerOptions": {
     "moduleResolution": "node",
     "module": "es2020",

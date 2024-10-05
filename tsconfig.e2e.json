@@ -1,9 +1,9 @@
 ﻿{
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.ext.json",
   "compilerOptions": {
     "moduleResolution": "node",
     "types": ["firefox-webext-browser", "jest", "node"]
   },
-  "include": ["**/*.ts", "./global.d.ts"],
-  "exclude": ["../node_modules"]
+  "include": ["e2e/**/*.ts", "e2e/global.d.ts"],
+  "exclude": ["./node_modules"]
 }
