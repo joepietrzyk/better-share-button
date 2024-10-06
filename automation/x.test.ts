@@ -1,4 +1,4 @@
-﻿import { buildFirefoxDriver } from './selenium-scripts';
+﻿import { buildFirefoxDriver, changeExtensionOptionSelect } from './selenium-scripts';
 import { By, until, WebElement, WebDriver } from 'selenium-webdriver';
 
 async function waitForXToLoad(driver: WebDriver): Promise<void> {
@@ -30,6 +30,22 @@ describe('x.com', () => {
     await bsb.click();
     const clipboard = await driver.getClipboardText();
     expect(clipboard).toMatch(/https:\/\/fixupx\.com\/[A-Za-z0-9\-_]+\/status\/\d+/);
+    await driver.closeTest();
+  });
+
+  it('should respect the X setting when changed on another tab', async () => {
+    const driver = await buildFirefoxDriver();
+    await driver.get('https://x.com/elonmusk');
+    await waitForXToLoad(driver);
+    const originalWindow = await driver.openNewTab();
+    await changeExtensionOptionSelect(driver, 'x', 'twittpr');
+    await driver.close();
+    await driver.switchTo().window(originalWindow);
+    const bsb = await clickFirstXPost(driver);
+    await driver.scrollElementIntoView(bsb);
+    await bsb.click();
+    const clipboard = await driver.getClipboardText();
+    expect(clipboard).toMatch(/https:\/\/twittpr\.com\/[A-Za-z0-9\-_]+\/status\/\d+/);
     await driver.closeTest();
   });
 });

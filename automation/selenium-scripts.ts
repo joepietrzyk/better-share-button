@@ -38,6 +38,8 @@ export async function changeExtensionOptionSelect(
   optionName: string,
   optionValue: string
 ): Promise<void> {
+  const originalWindow = await driver.getWindowHandle();
+  let windows = await driver.getAllWindowHandles();
   await driver.get('about:addons');
   const listItems = await driver.findElements(By.css('button[name="extension"]'));
   await listItems[0].click();
@@ -46,23 +48,17 @@ export async function changeExtensionOptionSelect(
       optionsPanel.shadowRoot.querySelector('label').click();`
   );
   // switch to the options window
-  await driver.wait(async () => (await driver.getAllWindowHandles()).length > 1, 10000);
-  const originalWindow = await driver.getWindowHandle();
-  const windows = await driver.getAllWindowHandles();
-  for (const handle of windows) {
-    if (handle !== originalWindow) {
-      await driver.switchTo().window(handle);
-      break;
-    }
-  }
-  // switch the reddit setting to rxddit
+  await driver.wait(async () => (await driver.getAllWindowHandles()).length > windows.length, 10000);
+  windows = await driver.getAllWindowHandles();
+  await driver.switchTo().window(windows[windows.length - 1]);
+  // switch the setting
   await driver.wait(until.elementLocated(By.id(optionName)), 5000);
   const optionDropdown = await driver.findElement(By.id(optionName));
   await driver.wait(until.elementIsVisible(optionDropdown), 5000);
   await optionDropdown.click();
   const optionSelect = new Select(optionDropdown);
   await optionSelect.selectByVisibleText(optionValue);
-  // close the extension window and navigate to old.reddit.com
+  // close extension window
   await driver.close();
   await driver.switchTo().window(originalWindow);
 }

@@ -40,3 +40,13 @@ WebDriver.prototype.scrollElementIntoView = async function (element): Promise<vo
     element
   );
 };
+
+WebDriver.prototype.openNewTab = async function (url: string = 'about:blank') {
+  const currentWindow = await this.getWindowHandle();
+  let windows = await this.getAllWindowHandles();
+  await this.executeScript(`window.open('${url}', '_blank');`);
+  await this.wait(async () => (await this.getAllWindowHandles()).length > windows.length, 10000);
+  windows = await this.getAllWindowHandles();
+  await this.switchTo().window(windows[windows.length - 1]);
+  return currentWindow;
+};

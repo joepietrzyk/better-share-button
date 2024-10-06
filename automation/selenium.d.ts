@@ -29,5 +29,12 @@ declare module 'selenium-webdriver' {
      * @returns a `Promise` that resolves when the element is in view
      */
     scrollElementIntoView(element: WebElement): Promise<void>;
+
+    /**
+     * Opens a new tab and switches to it
+     * @param url - the url to navigate to
+     * @returns a `Promise` that resolves with the original window handle
+     */
+    openNewTab(url: string = 'about:blank'): Promise<string>;
   }
 }
