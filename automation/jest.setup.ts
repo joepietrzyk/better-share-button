@@ -29,16 +29,11 @@ WebDriver.prototype.scrollElementIntoView = async function (element): Promise<vo
   await this.wait(until.elementIsVisible(element), 3000);
   await this.executeScript(
     `
-    const elementRect = arguments[0].getBoundingClientRect();
-    const absoluteElementTop = elementRect.top + window.pageYOffset;
-    const offset = 100; // Adjust this offset as needed to avoid sticky header
-    window.scrollTo({
-        top: absoluteElementTop - offset,
-        behavior: 'smooth'
-    });
+    arguments[0].scrollIntoView(true);
     `,
     element
   );
+  await this.sleep(500);
 };
 
 WebDriver.prototype.openNewTab = async function (url: string = 'about:blank') {

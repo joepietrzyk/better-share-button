@@ -45,6 +45,15 @@ describe('main', () => {
     document.body.innerHTML = '<body></body>';
   });
 
+  it('should add a listener to the existing tweets', async () => {
+    await addArticle();
+    main();
+    (document.body.querySelector('#share-button') as HTMLDivElement).click();
+    await addShareMenu();
+    const actualBsb = document.body.querySelector(`[${BSB_SHARE_BUTTON_ATTRIBUTE}]`);
+    expect(actualBsb).not.toBeNull();
+  });
+
   it('should add the Better Share Button when the share menu appears', async () => {
     main();
     await addArticle();
