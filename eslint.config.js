@@ -21,7 +21,7 @@ export default [
     rules: {},
   },
   {
-    files: ['e2e/**/*.ts', '**/*.test.ts', '**/__test__/**/*.ts'],
+    files: ['automation/**/*.ts', '**/*.test.ts', '**/__test__/**/*.ts'],
     rules: {
       'jsdoc/require-jsdoc': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',

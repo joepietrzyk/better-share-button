@@ -10,5 +10,9 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
-  "references": [{ "path": "tsconfig.ext.json" }, { "path": "tsconfig.test.json" }, { "path": "tsconfig.e2e.json" }]
+  "references": [
+    { "path": "tsconfig.ext.json" },
+    { "path": "tsconfig.test.json" },
+    { "path": "tsconfig.automation.json" }
+  ]
 }

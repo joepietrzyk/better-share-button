@@ -21,7 +21,7 @@ describe('old.reddit.com', () => {
     await driver.getAndWait('https://old.reddit.com');
     const clipboardContent = await clickShareRedditPost(driver);
     expect(clipboardContent).toMatch(/^https:\/\/vxreddit\.com\/r\/[^/]+\/comments\/[^/]+\/[^/]+\/$/);
-    await driver.close();
+    await driver.closeTest();
   });
 
   it('should copy a rxddit URL to the clipboard when the reddit setting is rxddit', async () => {
@@ -31,6 +31,6 @@ describe('old.reddit.com', () => {
     await driver.getAndWait('https://old.reddit.com');
     const clipboardContent = await clickShareRedditPost(driver);
     expect(clipboardContent).toMatch(/^https:\/\/rxddit\.com\/r\/[^/]+\/comments\/[^/]+\/[^/]+\/$/);
-    await driver.close();
+    await driver.closeTest();
   });
 });

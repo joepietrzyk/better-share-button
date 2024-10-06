@@ -4,6 +4,6 @@
     "moduleResolution": "node",
     "types": ["firefox-webext-browser", "jest", "node"]
   },
-  "include": ["e2e/**/*.ts", "e2e/global.d.ts"],
+  "include": ["automation/**/*.ts", "automation/global.d.ts", "automation/selenium.d.ts"],
   "exclude": ["./node_modules"]
 }

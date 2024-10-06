@@ -1,7 +1,7 @@
 ﻿export default {
   collectCoverageFrom: ['src/**/*.ts', '!src/**/__test__/**/*', '!src/**/*.test.ts'],
   coverageDirectory: 'coverage',
-  coveragePathIgnorePatterns: ['/e2e/'],
+  coveragePathIgnorePatterns: ['/automation/'],
   projects: [
     {
       displayName: 'unit',
@@ -19,14 +19,14 @@
       },
     },
     {
-      displayName: 'e2e',
+      displayName: 'automation',
       preset: 'ts-jest',
-      testMatch: ['<rootDir>/e2e/**/*.test.[tj]s?(x)'],
+      testMatch: ['<rootDir>/automation/**/*.test.[tj]s?(x)'],
       testPathIgnorePatterns: ['/node_modules/'],
       extensionsToTreatAsEsm: ['.ts'],
-      setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts'],
+      setupFilesAfterEnv: ['<rootDir>/automation/jest.setup.ts'],
       transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.e2e.json' }],
+        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.automation.json' }],
       },
     },
   ],
