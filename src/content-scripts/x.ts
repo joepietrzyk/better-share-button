@@ -10,32 +10,44 @@ if (isBrowser()) {
   main();
 }
 
+interface xLink {
+  url: string;
+}
+
+/**
+ * Handles the tweet. Adds the event listener to the share button
+ * @param article - the tweet to add the button to
+ * @param link - the link to set to when the button is clicked
+ */
+function handleTweet(article: Element, link: xLink) {
+  const shareButton = findShareButton(article);
+  shareButton?.addEventListener('click', () => {
+    link.url = getLinkFromArticle(article);
+  });
+}
+
 /**
  * Main entry point functionality to execute once preferences are loaded.
  * Sets up a MutationObserver on the main element to detect when the DOM is ready.
  */
 export function main() {
-  let link = '';
+  const link = { url: '' };
+  [...document.body.querySelectorAll('article')].forEach(article => handleTweet(article, link));
   const observer = createTweetObserver(
-    article => {
-      const shareButton = findShareButton(article);
-      shareButton?.addEventListener('click', () => {
-        link = getLinkFromArticle(article);
-      });
-    },
+    article => handleTweet(article, link),
     dropdown => {
-      if (link !== '') {
+      if (link.url !== '') {
         const bsb = createShareButton();
         (bsb as HTMLDivElement).addEventListener('click', async event => {
           const preferences = await loadPreferences();
-          const convertedLink = convertXLink(link, preferences.x);
+          const convertedLink = convertXLink(link.url, preferences.x);
           shareButtonClick(event, convertedLink, dropdown).then();
         });
         attachToDropdown(dropdown, bsb);
       }
     },
     () => {
-      link = '';
+      link.url = '';
     }
   );
   observer.observe(document.body, { childList: true, subtree: true });
