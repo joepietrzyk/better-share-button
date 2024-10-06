@@ -100,19 +100,25 @@ export async function shareButtonClick(event: MouseEvent, link: string, dropdown
  * @returns The extracted link from the article.
  */
 export function getLinkFromArticle(article: Element): string {
-  const linkFormat = /\/[^/]+\/status\/\d+$/;
   let link = '';
+  // check if you're looking at an img or video in an album
+  const matchPhotoOrVideo = /\/(photo|video)\/\d+$/;
+  const href = window.location.href;
+  if (matchPhotoOrVideo.test(href)) {
+    return href;
+  }
+  const linkFormat = /\/[^/]+\/status\/\d+$/;
   const links = [...article.querySelectorAll('a[href][dir="ltr"]')].filter(a => {
-    const href = a.getAttribute('href');
+    const hrefAttribute = a.getAttribute('href');
     // filter on href attributes that contain more than one / and exclude the text 'hashtag'
-    return href && linkFormat.test(href);
+    return hrefAttribute && linkFormat.test(hrefAttribute);
   });
   // if we're currently viewing a tweet instead of the feed, it won't have the href link
   if (links.length > 0) {
     link = links[0].getAttribute('href') || link;
     link = 'https://' + window.location.hostname + link;
   } else {
-    link = window.location.href;
+    link = href;
   }
 
   return link;

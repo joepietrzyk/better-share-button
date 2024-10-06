@@ -194,6 +194,28 @@ describe('getLinkFromArticle', () => {
     expect(actualLink).toBe(expectedLink);
   });
 
+  it("should use the window URL if you're viewing an image in an album", () => {
+    const expectedLink = 'https://x.com/1/test/status/1/photo/1';
+    Object.defineProperty(global, 'location', {
+      value: {
+        href: expectedLink,
+      },
+    });
+    const actualLink = getLinkFromArticle(document.createElement('article'));
+    expect(actualLink).toBe(expectedLink);
+  });
+
+  it("should use the window URL if you're viewing a video in an album", () => {
+    const expectedLink = 'https://x.com/1/test/status/1/video/1';
+    Object.defineProperty(global, 'location', {
+      value: {
+        href: expectedLink,
+      },
+    });
+    const actualLink = getLinkFromArticle(document.createElement('article'));
+    expect(actualLink).toBe(expectedLink);
+  });
+
   it("should fall back to the window URL if it's unable to find it in the tweet", () => {
     Object.defineProperty(global, 'location', {
       value: {
