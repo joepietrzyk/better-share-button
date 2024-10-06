@@ -2,9 +2,8 @@
   "extends": "./tsconfig.ext.json",
   "compilerOptions": {
     "moduleResolution": "node",
-    "module": "es2020",
     "types": ["firefox-webext-browser", "jest", "node"]
   },
-  "include": ["**/*.test.ts", "**/*.spec.ts", "test/**/*.ts", "./global.d.ts"],
-  "exclude": ["../../node_modules"]
+  "include": ["automation/**/*.ts", "automation/global.d.ts", "automation/selenium.d.ts"],
+  "exclude": ["./node_modules"]
 }
