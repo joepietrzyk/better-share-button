@@ -8,7 +8,7 @@
       preset: 'ts-jest',
       testEnvironment: 'jsdom',
       testMatch: ['<rootDir>/src/**/*.test.ts'],
-      testPathIgnorePatterns: ['/node_modules/', '/tests/integration/'],
+      testPathIgnorePatterns: ['/node_modules/', '/automation/'],
       setupFilesAfterEnv: ['<rootDir>/src/__test__/jest.setup.ts'],
       moduleNameMapper: {
         '\\.(css|less|scss|sass)$': '<rootDir>/__mocks__/style-mock.js',

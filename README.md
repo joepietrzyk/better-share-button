@@ -13,12 +13,18 @@
 - **Convenient**: Instead of having to manually edit the text in the URL before sending to your friends over Discord (or worse-- expect them to actually click your link), it adds a "Share" button that copies the already-fixed, embeddable URL.
 - **Customizable**: Easily configure which embed generator is used for each website.
 
+## Building
+
+1. Run `npm i -g pnpm@9.12.0`
+2. Run `pnpm i`
+3. Run `pnpm build`
+
 ## Installation
 
 It's not available in the Firefox Add-ons store yet, but will be if version 1.0.0 is ever released.
 
 1. Run `npm install`
-2. Run `npm build`
+2. Run `npm run build`
 3. Open Firefox and visit `about:debugging`
 4. Navigate to "This Firefox" and select Load Temporary Add-on...
 5. Select the `dist/manifest.json` file.
@@ -26,7 +32,7 @@ It's not available in the Firefox Add-ons store yet, but will be if version 1.0.
 
 # Development
 
-All development is done on Node.js version `20.17.0` and pnpm version `9`. In order to run the integration tests, you will need to install
+All development is done on Node.js version `20.17.0` and pnpm version `9.12`. In order to run the integration tests, you will need to install
 [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/), [geckodriver](https://github.com/mozilla/geckodriver/releases/tag/v0.35.0), and create a .env file (see [.env.example](./.env.example)).
 
 ## Contributing
