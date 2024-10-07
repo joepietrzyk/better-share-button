@@ -13,6 +13,7 @@ yarn-error.log*
 /dist
 /output
 /coverage
+/.idea
 
 # Individual files
 .env
