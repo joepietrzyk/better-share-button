@@ -1,6 +1,8 @@
 ﻿{
   "manifest_version": 2,
   "name": "Better Share Button",
+  "homepage_url": "https://github.com/joepietrzyk/better-share-button",
+  "repository_url": "https://github.com/joepietrzyk/better-share-button",
   "content_scripts": [
     {
       "matches": ["*://*.reddit.com/*"],
