@@ -20,7 +20,7 @@
     "default_icon": "assets/circular-icon.svg",
     "default_popup": "options.html"
   },
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "better-share-button@github.com"
     }
