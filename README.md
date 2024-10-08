@@ -15,7 +15,7 @@
 
 ## Building
 
-1. Run `npm i -g pnpm@9.12.0`
+1. Run `npm i -g pnpm@9.12.1`
 2. Run `pnpm i`
 3. Run `pnpm build`
 

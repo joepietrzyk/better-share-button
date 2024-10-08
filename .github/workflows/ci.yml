@@ -31,7 +31,7 @@ jobs:
         env:
           CI: true
         run: |
-          npm i -g pnpm@9.12.0
+          npm i -g pnpm@9.12.1
           pnpm i
 
       - name: Lint and format
