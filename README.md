@@ -1,7 +1,10 @@
-﻿# Better Share Button
+﻿<img src="https://raw.githubusercontent.com/joepietrzyk/better-share-button/main/assets/circular-icon.svg" alt="Circular Icon" width="200" height="200"/>
+
+# Better Share Button
 
 [![License](https://img.shields.io/github/license/joepietrzyk/better-share-button)](./LICENSE)
 [![Version](https://img.shields.io/github/package-json/v/joepietrzyk/better-share-button)](./package.json)
+![example workflow](https://github.com/joepietrzyk/better-share-button/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/github/joepietrzyk/better-share-button/graph/badge.svg?token=MN3ZFJDRXB)](https://codecov.io/github/joepietrzyk/better-share-button)
 
 ## Overview
@@ -18,6 +21,9 @@
 1. Run `npm i -g pnpm@9.12.1`
 2. Run `pnpm i`
 3. Run `pnpm build`
+4. Run `pnpm package`
+
+This will build the extension to the `dist` directory and output the packaged extension to the `output` directory.
 
 ## Installation
 
