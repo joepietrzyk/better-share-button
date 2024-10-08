@@ -56,7 +56,9 @@ jobs:
           geckodriver --version
 
       - name: Build project
-        run: pnpm build
+        run: |
+          pnpm build
+          pnpm package
 
       - name: Run tests
         run: pnpm test -- --testPathIgnorePatterns="automation/reddit.test.ts" --coverage --color
@@ -68,6 +70,14 @@ jobs:
           files: ./coverage/lcov.info
           flags: unittests
           fail_ci_if_error: true
+
+      - name: Upload build artifacts
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_artifact
+          path: ./output/better_share_button-*.xpi
+          if-no-files-found: error
 
       - name: Commit changes (if any)
         uses: stefanzweifel/git-auto-commit-action@v4

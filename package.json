@@ -2,7 +2,7 @@
   "name": "better-share-button",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "Improves the share button on Reddit and X to be friendly with Discord embedding",
+  "description": "Adds a new share button to Reddit and X that copies a Discord embeddable link.",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -10,7 +10,8 @@
     "start:firefox": "web-ext run --source-dir ./dist",
     "lint": "eslint",
     "format": "prettier --write .",
-    "build": "webpack --mode production && web-ext build --overwrite-dest -s ./dist --artifacts-dir ./output",
+    "build": "webpack --mode production",
+    "package": "web-ext build --overwrite-dest -s ./dist --artifacts-dir ./output --filename better_share_button-{version}.xpi",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
     "test:automation": "jest --selectProjects automation",
