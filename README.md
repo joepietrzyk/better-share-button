@@ -29,12 +29,7 @@ This will build the extension to the `dist` directory and output the packaged ex
 
 It's not available in the Firefox Add-ons store yet, but will be if version 1.0.0 is ever released.
 
-1. Run `npm install`
-2. Run `npm run build`
-3. Open Firefox and visit `about:debugging`
-4. Navigate to "This Firefox" and select Load Temporary Add-on...
-5. Select the `dist/manifest.json` file.
-6. Alternatively, you can run `npm run start:firefox` to load the addon into a temporary instance of Firefox
+1. Download the latest release from the [Releases](https://github.com/joepietrzyk/better-share-button/releases) page.
 
 # Development
 
