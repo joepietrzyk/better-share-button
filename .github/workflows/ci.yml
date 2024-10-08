@@ -22,6 +22,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Extract version and timestamp
+        id: version_tag
+        run: |
+          VERSION=$(jq -r .version < package.json)
+          TIMESTAMP=$(date +'%Y.%m.%d.%H.%M')
+          echo "TAG=v$VERSION.$TIMESTAMP" >> $GITHUB_ENV
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -84,3 +91,35 @@ jobs:
         with:
           commit_message: 'style: Auto-format code'
           branch: ${{ github.head_ref }}
+
+  create-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-and-test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build_artifact
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.TAG }}
+          release_name: 'Release ${{ env.TAG }}'
+          body: 'Automatic release for version ${{ env.TAG }}'
+          draft: false
+          prerelease: false
+
+      - name: Upload assets to release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./output/better_share_button-*.xpi
+          asset_name: better_share_button.-${{ env.TAG }}xpi
+          asset_content_type: application/x-xpinstall
