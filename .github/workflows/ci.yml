@@ -75,7 +75,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build_artifact
-          path: ./output/better_share_button-*.{xpi,zip}
+          path: output/better_share_button-*.{xpi,zip}
+          if-no-files-found: error
 
       - name: Commit changes (if any)
         uses: stefanzweifel/git-auto-commit-action@v4
