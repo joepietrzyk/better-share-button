@@ -59,6 +59,7 @@ jobs:
         run: |
           pnpm build
           pnpm package
+          ls -al ./output
 
       - name: Run tests
         run: pnpm test -- --testPathIgnorePatterns="automation/reddit.test.ts" --coverage --color
