@@ -50,18 +50,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract version and timestamp
+      - name: Get the tag name
         id: version_tag
         run: |
           VERSION=$(jq -r .version < package.json)
           TIMESTAMP=$(date +%s)
+          echo "VERSION=v$VERSION" >> $GITHUB_ENV
           echo "TAG=v$VERSION-$TIMESTAMP" >> $GITHUB_ENV
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: build_artifact
-          
+
       - name: Debug
         run: ls -la
 
@@ -78,9 +79,9 @@ jobs:
           prerelease: false
 
       - name: Upload assets to release
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: better_share_button-1.0.0.xpi
-          asset_name: better_share_button-${{ env.TAG }}.xpi
-          asset_content_type: application/x-xpinstall
+          tag_name: ${{ env.TAG }}
+          name: 'Release ${{ env.TAG }}'
+          body: 'Automatic release for version ${{ env.VERSION }}'
+          files: better_share_button-*.xpi
