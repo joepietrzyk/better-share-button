@@ -9,11 +9,6 @@ on:
       - main
       - develop
 
-env:
-  FIREFOX_BINARY_PATH: /opt/firefox-developer/firefox
-  GECKODRIVER_BINARY_PATH: /usr/local/bin/geckodriver
-  EXTENSION_PATH_GLOB: ./output/better_share_button-*.{xpi,zip}
-
 jobs:
   build-and-test:
     runs-on: ubuntu-22.04
@@ -61,6 +56,10 @@ jobs:
           pnpm package
 
       - name: Run tests
+        env:
+          FIREFOX_BINARY_PATH: /opt/firefox-developer/firefox
+          GECKODRIVER_BINARY_PATH: /usr/local/bin/geckodriver
+          EXTENSION_PATH_GLOB: ./output/better_share_button-*.{xpi,zip}
         run: pnpm test -- --testPathIgnorePatterns="automation/reddit.test.ts" --coverage --color
 
       - name: Upload code coverage report
@@ -97,8 +96,8 @@ jobs:
         id: version_tag
         run: |
           VERSION=$(jq -r .version < package.json)
-          TIMESTAMP=$(date +'%Y.%m.%d.%H.%M')
-          echo "TAG=v$VERSION.$TIMESTAMP" >> $GITHUB_ENV
+          TIMESTAMP=$(date +%s)
+          echo "TAG=v$VERSION-$TIMESTAMP" >> $GITHUB_ENV
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -119,7 +118,7 @@ jobs:
       - name: Upload assets to release
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./output/better_share_button-*.xpi
-          asset_name: better_share_button.-${{ env.TAG }}xpi
+          asset_name: better_share_button-${{ env.TAG }}.xpi
           asset_content_type: application/x-xpinstall
