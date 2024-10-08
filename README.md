@@ -30,6 +30,10 @@ This will build the extension to the `dist` directory and output the packaged ex
 It's not available in the Firefox Add-ons store yet, but will be if version 1.0.0 is ever released.
 
 1. Download the latest release from the [Releases](https://github.com/joepietrzyk/better-share-button/releases) page.
+2. Go to `about:debugging`
+3. Click "This Firefox"
+4. Click "Load Temporary Add-on..."
+5. Select the extension from your downloads
 
 # Development
 
