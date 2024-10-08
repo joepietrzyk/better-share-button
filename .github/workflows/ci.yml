@@ -105,9 +105,6 @@ jobs:
         with:
           name: build_artifact
 
-      - name: Debug
-        run: ls -la
-
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
