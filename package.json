@@ -11,7 +11,7 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "build": "webpack --mode production",
-    "package": "web-ext build --overwrite-dest -s ./dist --artifacts-dir ./output",
+    "package": "web-ext build --overwrite-dest -s ./dist --artifacts-dir ./output --filename better_share_button-{version}.xpi",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
     "test:automation": "jest --selectProjects automation",
